@@ -18,5 +18,10 @@ public class CalculatorController {
         return ResponseEntity.ok(calculatorService.optimizeCut(inputData)) ;
     }
 
+    @GetMapping("/calculators/doc/{workId}")
+    public ResponseEntity optimizeCut(@PathVariable String workId) {
+        //return ResponseEntity.ok(calculatorService.optimizeCut(inputData)) ;
+        return ResponseEntity.ok().build();
+    }
 }
 
