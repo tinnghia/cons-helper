@@ -1,7 +1,5 @@
 import "./AppStyles.css";
-
-import { Cards } from "./Cards";
-import { CategoryList } from "./CategoryList";
+import InputForm from "./InputForm";
 
 export default function Home() {
     const onChangeCategory = (categoryCode: string) => {
@@ -9,10 +7,7 @@ export default function Home() {
     }
     return (
         <>
-            <CategoryList onChange={onChangeCategory} />
-            <div>
-                <Cards />
-            </div>
+            <InputForm/>
         </>
     );
 }

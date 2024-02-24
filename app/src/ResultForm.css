@@ -1,0 +1,16 @@
+.result-form {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Add transition effect for opacity */
+  margin-left: 20px;
+}
+
+.result-form.show {
+  opacity: 1;
+}
+
+.indent {
+  margin-left: 20px;
+}
+.bold-label {
+  font-weight: bold;
+}

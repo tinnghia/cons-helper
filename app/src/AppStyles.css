@@ -20,7 +20,7 @@ body {
   background-color: #ffffff;
 }
 
-.header a {
+/*.header a {
   float: left;
   color: black;
   text-align: center;
@@ -30,6 +30,7 @@ body {
   line-height: 25px;
   border-radius: 4px;
 }
+*/
 
 .header a.logo {
   font-size: 25px;
@@ -135,4 +136,22 @@ div.scrollmenu a.active {
 
 .categoryCls{
   cursor: pointer;
+}
+
+.header-left {
+  float: left;
+}
+
+.headerText{
+  font-size: 24px;
+  font-weight: bold; 
+  color: #333; 
+  text-transform: uppercase; 
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+.greeting{
+  margin-right: 10px;
 }

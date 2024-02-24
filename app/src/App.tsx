@@ -8,23 +8,20 @@ export default function App() {
   return (
     <BrowserRouter>
 
-      <ContextProvider>
-        <>
-          <div className="header">
-            <a href="/" className="logo">
-              <img alt="Envato Market" className="header_logo" src="leanwithme.png" />
-            </a>
-            <div className="header-right">
-              <a href="/admin">Admin</a>
-              <a href="/signin">Sign In</a>
-            </div>
+      <>
+        <div className="header">
+          <div className="header-left">
+            <span className="headerText">STEEL BAR UTILITY</span>
           </div>
-          <Routes>
-            <Route path="/" Component={Home}></Route>
-            <Route path="/admin" Component={Admin}></Route>
-          </Routes>
-        </>
-      </ContextProvider>
+          <div className="header-right">
+            <span className="greeting">Hi Nghia</span>
+            <a  href="/signin">Log out</a>
+          </div>
+        </div>
+        <Routes>
+          <Route path="/" Component={Home}></Route>
+        </Routes>
+      </>
     </BrowserRouter>
   );
 }

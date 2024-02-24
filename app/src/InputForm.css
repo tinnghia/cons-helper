@@ -1,0 +1,67 @@
+.bar-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.bar-form label {
+  font-weight: bold;
+}
+
+.bar-form input[type="number"] {
+  width: calc(100% - 50px); /* Adjust width to leave room for padding */
+  padding: 8px;
+  font-size: 16px;
+  margin-top: 12px;
+}
+.bar-form select {
+  width: calc(100% - 30px); /* Adjust width to leave room for padding */
+  padding: 8px;
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.bar-form button {
+  grid-column: span 2; /* Make the button span across both columns */
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.bar-form button:hover {
+  background-color: #0056b3;
+}
+
+.scrollable-div {
+  min-height: 320px;
+  max-height: 300px; /* Adjust the height as needed */
+  overflow-y: scroll;
+  overflow: scroll;
+}
+.left-form{
+  border-style: solid;
+  border-width: 2px;
+  border-color: #29a0ad;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+.right-form{
+  border-style: solid;
+  border-width: 2px;
+  border-color: #29a0ad;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+.error-message {
+  color: red; /* Color of the error message */
+  font-size: 14px; /* Font size of the error message */
+  margin-top: 5px; /* Top margin to create space between the error message and the button */
+}
