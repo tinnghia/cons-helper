@@ -18,6 +18,10 @@ body {
 .header {
   overflow: hidden;
   background-color: #ffffff;
+
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
 }
 
 /*.header a {
@@ -76,6 +80,7 @@ div.scrollmenu a {
 div.scrollmenu a:hover {
   background-color: #777;
 }
+
 div.scrollmenu a.active {
   background-color: dodgerblue;
   color: white;
@@ -134,7 +139,7 @@ div.scrollmenu a.active {
   justify-content: center;
 }
 
-.categoryCls{
+.categoryCls {
   cursor: pointer;
 }
 
@@ -142,16 +147,17 @@ div.scrollmenu a.active {
   float: left;
 }
 
-.headerText{
+.headerText {
   font-size: 24px;
-  font-weight: bold; 
-  color: #333; 
-  text-transform: uppercase; 
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
   border-bottom: 2px solid #333;
   padding-bottom: 5px;
   margin-bottom: 10px;
   margin-left: 10px;
 }
-.greeting{
+
+.greeting {
   margin-right: 10px;
 }

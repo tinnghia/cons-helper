@@ -14,3 +14,18 @@
 .bold-label {
   font-weight: bold;
 }
+
+.result-form button {
+  grid-column: span 2;
+  /* Make the button span across both columns */
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.bar-form button:hover {
+  background-color: #0056b3;
+}
