@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class CombinationSetIndices {
     int [] indices;
     int total;
+    int numberCuts;
 
     @Override
     public String toString() {

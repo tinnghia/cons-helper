@@ -12,9 +12,6 @@ public class CombinationSet {
     int[] totals;
 
     int sum;
-    int maxSet;
-
-    int neededNo;
 
     @Override
     public String toString() {

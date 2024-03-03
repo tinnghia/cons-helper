@@ -5,10 +5,21 @@ import java.util.List;
 public class OutputData {
 
     private String workId;
-    private int min_bars;
-    private List<OutputSet> set;
+    private String unit;
+    private double bar_length;
 
-    private String html;
+    private int min_bars;
+    private List<SplitMethod> methods;
+
+    private String displayDividedBars;
+
+    public String getDisplayDividedBars() {
+        return displayDividedBars;
+    }
+
+    public void setDisplayDividedBars(String displayDividedBars) {
+        this.displayDividedBars = displayDividedBars;
+    }
 
     public String getWorkId() {
         return workId;
@@ -16,6 +27,22 @@ public class OutputData {
 
     public void setWorkId(String workId) {
         this.workId = workId;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public double getBar_length() {
+        return bar_length;
+    }
+
+    public void setBar_length(double bar_length) {
+        this.bar_length = bar_length;
     }
 
     // Getters and setters
@@ -27,19 +54,11 @@ public class OutputData {
         this.min_bars = min_bars;
     }
 
-    public List<OutputSet> getSet() {
-        return set;
+    public List<SplitMethod> getMethods() {
+        return methods;
     }
 
-    public void setSet(List<OutputSet> set) {
-        this.set = set;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
+    public void setMethods(List<SplitMethod> methods) {
+        this.methods = methods;
     }
 }

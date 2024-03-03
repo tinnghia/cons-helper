@@ -6,6 +6,7 @@ public class OutputSet {
     private int total;
     private List<OutputSplit> split;
     private double remain_per_each;
+    private String displaySplit;
 
     // Getters and setters
     public int getTotal() {
@@ -14,6 +15,14 @@ public class OutputSet {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public String getDisplaySplit() {
+        return displaySplit;
+    }
+
+    public void setDisplaySplit(String displaySplit) {
+        this.displaySplit = displaySplit;
     }
 
     public List<OutputSplit> getSplit() {
