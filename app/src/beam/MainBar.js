@@ -13,9 +13,10 @@ const JOIN_LENGTH = 15;
 
 const MainBar = ({ beginX, endX, y, joins, isUp }) => {
     const newJoins = [beginX, ...joins, endX];
-    const horizontalLines = joins.map((span, index) => {
+    const length = newJoins.length;
+    const horizontalLines = newJoins.map((x, index) => {
         // Calculate the x-coordinate of the current vertical line
-        const x = index === 0 ? span : newSpans.slice(0, index).reduce((a, b) => a + b, 0) + span;
+        const x = (index === 0 || index===(length-1)) ? x : newSpans.slice(0, index).reduce((a, b) => a + b, 0) + span;
         return { x, y: AXIS_MARGIN_TOP };
     });
 
