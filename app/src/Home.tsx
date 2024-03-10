@@ -1,4 +1,5 @@
 import "./AppStyles.css";
+import DrawBeam from "./DrawBeam";
 import InputForm from "./InputForm";
 
 export default function Home() {
@@ -7,7 +8,7 @@ export default function Home() {
     }
     return (
         <>
-            <InputForm/>
+            <DrawBeam></DrawBeam>
         </>
     );
 }
