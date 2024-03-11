@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Line, Text } from 'react-konva';
 
-const DEFAULT_BAR_MAIN_THICKNESS = 4;
-const DEFAULT_BAR_SECONDARY_THICKNESS = 4;
+export const DEFAULT_BAR_MAIN_THICKNESS = 4;
+export const DEFAULT_BAR_SECONDARY_THICKNESS = 4;
 const DEFAULT_SPACE_BETWEEN_LABEL_BAR = 2;
 const DEFAULT_LABEL_FONT_SIZE = 5;
 const DEFAULT_LABEL_MAIN_COLOR = 'blue';
