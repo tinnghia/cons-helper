@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cinzel">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beam Craft</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <!--<div class="logo">Tool Name</div>-->
+        <div class="logo-holder logo-6">
+            <a href="">
+              <h3>Beam <span>Craft</span></h3>
+            </a>
+          </div>
+        <div class="user-info">
+            <a href="#" id="userButton" class="tnb-signup-btn">Nghia</a>
+            <div id="userDropdown" class="dropdown-content">
+                <a href="#">Settings</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <ul id="subToolList">
+            <li><a href="#" onclick="selectSubTool(event, 'subTool1')">Design Beam</a></li>
+            <li><a href="#" onclick="selectSubTool(event, 'subTool2')">Cutting Bar</a></li>
+            <!-- Add more sub tools as needed -->
+        </ul>
+    </nav>
+    <main>
+        <div class="input-section" id="inputSection">
+            <!-- Input fields here -->
+        </div>
+        <div class="splitter" id="splitter">
+            <button id="toggleButton" onclick="toggleInputSection()" title="Toggle Input">
+                <svg class="splitter_left" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" />
+                </svg>
+
+                <svg class="splitter_right" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5" />
+                </svg>
+            </button>
+            
+        </div>
+
+        <div class="result-section">
+            <!-- Result display -->
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'result')">Result</button>
+                <button class="tablinks" onclick="openTab(event, 'history')">History</button>
+            </div>
+            <div id="result" class="tabcontent">
+                <canvas id="result-canvas"></canvas>
+                <div id="result-text"></div>
+            </div>
+            <div id="history" class="tabcontent">
+                <!-- History items here -->
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>
