@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Home.css";
-import InputForm from "../InputForm";
-import ResultForm from "../ResultForm";
 import { OutputData } from "../models/OutputData";
+import CuttingInputForm from "./CuttingInputForm";
+import CuttingResultForm from "./CuttingResultForm";
 
 export default function Home() {
 
@@ -130,7 +130,7 @@ export default function Home() {
             </nav>
             <main>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth }}>
-                    <InputForm onResult={onHandleCuttingResult} show={isShowLeft}></InputForm>
+                    <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
                     <button id="toggleButton" onClick={toggleInputSection} title="Toggle Input">
@@ -156,7 +156,7 @@ export default function Home() {
                     </div>
                     <div id="result" className={activeTab === 'result' ? "tabcontent active" : "tabcontent"}>
                         <div id="result-text">
-                            {isShowCuttingResult && (<ResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
+                            {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                             )}
                         </div>
                     </div>
