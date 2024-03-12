@@ -3,12 +3,15 @@ import "./Home.css";
 import { OutputData } from "../models/OutputData";
 import CuttingInputForm from "./CuttingInputForm";
 import CuttingResultForm from "./CuttingResultForm";
+import DesignBeamInputForm from "./DesignBeamInputForm";
+import DesignBeamResultForm from "./DesignBeamResultForm";
 
 export default function Home() {
 
     //CUTTING BAR
     const [outputData, setOutputData] = useState<OutputData>();
     const [isShowCuttingResult, SetIsShowCuttingResult] = useState(false);
+    const [isShowDesignResult, SetIsShowDesignResult] = useState(false);
 
     const [isShowLeft, SetIsShowLeft] = useState(true);
     const [inputWidth, setInputWidth] = useState('50%');
@@ -36,6 +39,10 @@ export default function Home() {
 
     const handleCuttingBack = () => {
 
+    }
+
+    const onHandleDesignResult = (outputData: OutputData) => {
+        SetIsShowDesignResult(true);
     }
 
     const onHandleCuttingResult = (outputData: OutputData) => {
@@ -130,7 +137,8 @@ export default function Home() {
             </nav>
             <main>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth }}>
-                    <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>
+                    {activeTool === 'beam' && <DesignBeamInputForm onResult={onHandleDesignResult} show={isShowLeft}></DesignBeamInputForm>}
+                    {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
                     <button id="toggleButton" onClick={toggleInputSection} title="Toggle Input">
@@ -157,6 +165,9 @@ export default function Home() {
                     <div id="result" className={activeTab === 'result' ? "tabcontent active" : "tabcontent"}>
                         <div id="result-text">
                             {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
+                            )}
+
+                            {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                             )}
                         </div>
                     </div>
