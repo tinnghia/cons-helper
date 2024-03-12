@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Home.css";
+import InputForm from "../InputForm";
+import ResultForm from "../ResultForm";
+import { OutputData } from "../models/OutputData";
 
 export default function Home() {
 
+    //CUTTING BAR
+    const [outputData, setOutputData] = useState<OutputData>();
+    const [isShowCuttingResult, SetIsShowCuttingResult] = useState(false);
+
+    const [isShowLeft, SetIsShowLeft] = useState(true);
     const [inputWidth, setInputWidth] = useState('50%');
     const [resultWidth, setResultWidth] = useState('50%');
     const [splitterCursor, setSplitterCursor] = useState('col-resize');
@@ -26,6 +34,14 @@ export default function Home() {
     const inputSectionRef = useRef<any>(null);
     const resultSectionRef = useRef<any>(null);
 
+    const handleCuttingBack = () => {
+
+    }
+
+    const onHandleCuttingResult = (outputData: OutputData) => {
+        setOutputData(outputData);
+        SetIsShowCuttingResult(true);
+    }
     const handleMouseDown = (event: any) => {
         setIsResizing(true);
         document.addEventListener('mousemove', handleMouseMove);
@@ -74,12 +90,14 @@ export default function Home() {
 
     const toggleInputSection = () => {
         if (inputWidth === "0px" || inputWidth === "") {
+            SetIsShowLeft(true);
             setInputWidth('50%');
             setResultWidth('50%');
             setSplitterCursor('col-resize');
             setSvgLeftDisplay('block');
             setSvgRightDisplay('none');
         } else {
+            SetIsShowLeft(false);
             setInputWidth('0px');
             setResultWidth('100%');
             setSplitterCursor('pointer');
@@ -112,6 +130,7 @@ export default function Home() {
             </nav>
             <main>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth }}>
+                    <InputForm onResult={onHandleCuttingResult} show={isShowLeft}></InputForm>
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
                     <button id="toggleButton" onClick={toggleInputSection} title="Toggle Input">
@@ -136,8 +155,10 @@ export default function Home() {
                         <button className={activeTab === 'history' ? "tablinks active" : "tablinks"} onClick={() => openTab('history')}>History</button>
                     </div>
                     <div id="result" className={activeTab === 'result' ? "tabcontent active" : "tabcontent"}>
-                        <canvas id="result-canvas"></canvas>
-                        <div id="result-text"></div>
+                        <div id="result-text">
+                            {isShowCuttingResult && (<ResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
+                            )}
+                        </div>
                     </div>
                     <div id="history" className={activeTab === 'history' ? "tabcontent active" : "tabcontent"}>
                     </div>

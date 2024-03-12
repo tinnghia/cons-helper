@@ -12,42 +12,42 @@ const ResultForm: React.FC<ResultFormProps> = (OutputData) => {
         try {
             // Make a GET request to the server to download the file
             const response = await fetch(`http://localhost:8080/api/calculators/doc/${OutputData.workId}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/octet-stream', // Set appropriate content type
-              },
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/octet-stream', // Set appropriate content type
+                },
             });
-    
+
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-      
+
             const link = document.createElement('a');
             link.href = url;
-      
+
             const contentDispositionHeader = response.headers.get('Content-Disposition');
-            console.log('response.headers',contentDispositionHeader)
+            console.log('response.headers', contentDispositionHeader)
             const filename = contentDispositionHeader ? contentDispositionHeader.split('filename=')[1] : 'downloaded_file';
-            
+
             // Set the filename for download
             link.setAttribute('download', filename);
-      
+
             // Append the link to the body
             document.body.appendChild(link);
-      
+
             // Click the link to start download
             link.click();
-      
+
             // Remove the link from the body
             document.body.removeChild(link);
-          } catch (error) {
+        } catch (error) {
             console.error('Error downloading file:', error);
-          }
+        }
     };
 
     return (
         <div className='result-form'>
             <div className="form-group">
-                <button type="button" onClick={OutputData.onBack} >Back</button> <button type="button" onClick={handleDownload} >Download</button>
+                {/*<button type="button" onClick={OutputData.onBack} >Back</button>*/} <button type="button" onClick={handleDownload} >Download</button>
             </div>
             <h2>Input</h2>
             <div className="indent">
@@ -69,8 +69,8 @@ const ResultForm: React.FC<ResultFormProps> = (OutputData) => {
                     <div className="indent" key={index}>
                         <label className='bold-label'> METHOD {index}</label>
                         <ul className="indent">
-                            {splitMethod.set.map((splitSet) => (
-                                <li>{splitSet.total} * (Each bar is divided into segments of {splitSet.displaySplit})</li>
+                            {splitMethod.set.map((splitSet, index) => (
+                                <li key={index}>{splitSet.total} * (Each bar is divided into segments of {splitSet.displaySplit})</li>
                             ))}
                         </ul>
                         <p> <label className='bold-label'>Remaining segments:</label> {splitMethod.displayRemain}</p>

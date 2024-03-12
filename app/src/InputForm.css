@@ -148,4 +148,11 @@
 }
 .bodyCls{
   margin-top: 100px;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Add transition effect for opacity */
+}
+
+
+.bodyCls.hide {
+  opacity: 0;
 }

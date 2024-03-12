@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import "./InputForm.css";
 import ResultForm from './ResultForm';
 import { OutputData } from './models/OutputData';
@@ -8,7 +8,7 @@ interface DividedBar {
     numberOfBars: string;
 }
 
-function InputForm() {
+const InputForm: FunctionComponent<{ show: boolean, onResult: (outputData: OutputData) => void }> = ({ show, onResult }) => {
     const [unit, setUnit] = useState('M');
     const [barLength, setBarLength] = useState<string>('');
     const [dividedBars, setDividedBars] = useState<DividedBar[]>([]);
@@ -118,27 +118,14 @@ function InputForm() {
                 return response.json();
             })
             .then((data) => {
-                console.log('data', data);
-                /*data.displayDividedBars = dividedBars.map(bar => bar.length).join(', ');
-                for (var i = 0; i < data.methods.length; i++) {
-                    let displayRemain = data.methods[i].set.filter((sps: any) => sps.remain_per_each > 0).
-                        map((sps: any) => { return sps.total + ' * ' + sps.remain_per_each }).join(', ')
-                    data.methods[i].displayRemain = displayRemain;
-                    for (var j = 0; j < data.methods[i].set.length; j++) {
-                        let displaySplit = data.methods[i].set[j].split.filter((split: any) => split.total > 0).
-                            map((split: any) => { return split.total + ' * ' + split.length }).join(', ');
-                        data.methods[i].set[j].displaySplit = displaySplit;
-
-                    }
-                }*/
                 setOutputData(data);
+                onResult(data);
                 setHtmlResult(data.html);
-                setShowResult(true);
+                //setShowResult(true);
                 setIsProcessing(false);
                 console.log('Data posted successfully');
             })
             .catch(error => {
-                // Handle error
                 setIsProcessing(false);
                 console.error('There was a problem with your fetch operation:', error);
             });
@@ -146,7 +133,7 @@ function InputForm() {
     };
 
     return (
-        <div className='bodyCls'>
+        <div className={show ? "bodyCls" : "bodyCls hide"}>
             {!showResult ? (
                 <form className="bar-form">
                     <div className='left-form'>

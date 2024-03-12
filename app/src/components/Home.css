@@ -91,7 +91,7 @@ main {
 .input-section {
     padding: 20px;
     transition: width 0.3s ease-in-out;
-    background-color: #f0f0f0;
+    /*background-color: #f0f0f0;*/
 }
 
 .splitter {
