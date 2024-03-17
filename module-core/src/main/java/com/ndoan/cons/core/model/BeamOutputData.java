@@ -10,4 +10,6 @@ import java.util.List;
 public class BeamOutputData {
     List<SolutionMainBar> topBars;
     List<SolutionMainBar> bottomBars;
+    int[] spans;
+    int[] indexes;
 }

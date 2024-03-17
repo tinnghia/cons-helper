@@ -1,9 +1,14 @@
 package com.ndoan.cons.core.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  represent the cut bar from standard bar
 
  **/
+@Getter
+@Setter
 public class RealBar {
     int parentIndex;
     int index;

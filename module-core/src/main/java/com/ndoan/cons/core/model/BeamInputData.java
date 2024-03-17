@@ -16,9 +16,6 @@ public class BeamInputData {
     int firstColumnIndex;
     int lastColumnIndex;
     int[] spans;
-    int numberOfTopBars;
-    int numberOfBottomBars;
-
     /** generated values during calculation **/
     int eachAnchorLength;
     int totalLengh;

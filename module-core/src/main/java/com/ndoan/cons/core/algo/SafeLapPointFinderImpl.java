@@ -85,7 +85,7 @@ public class SafeLapPointFinderImpl implements SafeLapPointFinder {
             current = inputData.getSpans()[0];
 
             SafeLapPoint sp = new SafeLapPoint();
-            int startFromColumnLength = (int) Math.ceil(inputData.getTopSafeZoneAwayFromColumn() * inputData.getSpans()[0]);
+            int startFromColumnLength = (int) Math.ceil(inputData.getBottomSafeZoneFromColumn() * inputData.getSpans()[0]);
             sp.setBegin(current);
             sp.setEnd(current - startFromColumnLength);
             sp.setSpanIndex(0);
