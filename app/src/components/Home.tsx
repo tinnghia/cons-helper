@@ -5,11 +5,13 @@ import CuttingInputForm from "./CuttingInputForm";
 import CuttingResultForm from "./CuttingResultForm";
 import DesignBeamInputForm from "./DesignBeamInputForm";
 import DesignBeamResultForm from "./DesignBeamResultForm";
+import { BeamOutputData } from "../models/BeamOutputData";
 
 export default function Home() {
 
     //CUTTING BAR
     const [outputData, setOutputData] = useState<OutputData>();
+    const [outputDesignData, setOutputDesignData] = useState<BeamOutputData>();
     const [isShowCuttingResult, SetIsShowCuttingResult] = useState(false);
     const [isShowDesignResult, SetIsShowDesignResult] = useState(false);
 
@@ -41,7 +43,9 @@ export default function Home() {
 
     }
 
-    const onHandleDesignResult = (outputData: OutputData) => {
+    const onHandleDesignResult = (outputData: BeamOutputData) => {
+        setOutputDesignData(outputData);
+        console.log('setOutputDesignData', outputData);
         SetIsShowDesignResult(true);
     }
 
@@ -167,7 +171,7 @@ export default function Home() {
                             {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                             )}
 
-                            {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
+                            {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
                             )}
                         </div>
                     </div>

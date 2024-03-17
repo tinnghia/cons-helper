@@ -147,7 +147,7 @@
   pointer-events: none; /* Disable pointer events to make the form unclickable */
 }
 .bodyCls{
-  margin-top: 100px;
+  margin-top: 10px;
   opacity: 1;
   transition: opacity 0.5s ease-in-out; /* Add transition effect for opacity */
 }
@@ -155,4 +155,8 @@
 
 .bodyCls.hide {
   opacity: 0;
+}
+
+.columnIndexCls {
+  margin-bottom: 5px;
 }

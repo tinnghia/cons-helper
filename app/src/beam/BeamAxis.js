@@ -1,23 +1,22 @@
 import React from 'react';
 import { Circle, Line, Text } from 'react-konva';
+import { LENGTH_SCALE } from './MainBar';
 
-const AXIS_MARGIN_TOP = 50;
-const AXIS_MARGIN_LEFT = 50;
+export const AXIS_MARGIN_TOP = 50;
+export const AXIS_MARGIN_LEFT = 50;
 const YAXIS_OVER_LEFT_RIGHT = 20;
-const AXIS_HEIGHT = 100;
+export const AXIS_HEIGHT = 120;
 const AXIS_LEGEND_COLOR = 'black';
 const AXIS_LEGEND_CIRCLE_COLOR = 'red';
 const AXIS_X_COLOR = 'red';
 const AXIS_Y_COLOR = 'green';
 
-const BeamAxis = ({ spans }) => {
-    const newSpans = [AXIS_MARGIN_LEFT, ...spans];
-    const verticalLines = newSpans.map((span, index) => {
+const BeamAxis = ({ indexes }) => {
+    const verticalLines = indexes.map((idx, index) => {
         // Calculate the x-coordinate of the current vertical line
-        const x = index === 0 ? span : newSpans.slice(0, index).reduce((a, b) => a + b, 0) + span;
+        const x = idx * LENGTH_SCALE + AXIS_MARGIN_LEFT;
         return { x, y: AXIS_MARGIN_TOP };
     });
-
     const yAxisX1 = verticalLines[0].x - YAXIS_OVER_LEFT_RIGHT;
     const yAxisX2 = verticalLines[verticalLines.length - 1].x + YAXIS_OVER_LEFT_RIGHT;
 

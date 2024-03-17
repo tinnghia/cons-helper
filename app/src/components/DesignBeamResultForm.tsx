@@ -1,16 +1,17 @@
 import React from 'react';
 import "./DesignBeamResultForm.css";
-import { OutputData } from '../models/OutputData';
 import DrawBeam from '../DrawBeam';
+import BeamCanvas from './BeamCanvas';
+import { BeamOutputData } from '../models/BeamOutputData';
 
-interface ResultFormProps extends OutputData {
+interface ResultFormProps extends BeamOutputData {
     onBack: (event: React.MouseEvent) => void;
 }
 
-const DesignBeamResultForm: React.FC<ResultFormProps> = (OutputData) => {
+const DesignBeamResultForm: React.FC<ResultFormProps> = (outputData) => {
 
     return (
-        <DrawBeam></DrawBeam>
+        <BeamCanvas topBars={outputData.topBars} bottomBars={outputData.bottomBars} indexes={outputData.indexes} ></BeamCanvas>
     )
 }
 

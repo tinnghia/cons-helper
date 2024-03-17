@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Line, Text } from 'react-konva';
+import { LENGTH_SCALE } from './MainBar';
 
 export const DEFAULT_BAR_MAIN_THICKNESS = 4;
 export const DEFAULT_BAR_SECONDARY_THICKNESS = 4;
@@ -11,7 +12,7 @@ const DEFAULT_BAR_MAIN_COLOR = 'blue';
 const DEFAULT_BAR_SECONDARY_COLOR = 'orange';
 const DEFAULT_BLUR_COLOR = 'grey';
 
-const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, isAnchorEnd, unit = 'm' }) => {
+const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, isAnchorEnd, beginAnchor, endAnchor, unit = 'm' }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   // Calculate label position
@@ -30,9 +31,9 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
 
   const barThickness = isMain ? DEFAULT_BAR_MAIN_THICKNESS : DEFAULT_BAR_SECONDARY_THICKNESS;
   let points = [];
-  if (isMain && isAnchorBegin) {
+  if (isMain && beginAnchor && beginAnchor > 0) {
     points.push(x1);
-    points.push(isUp ? y + anchorSize : y - anchorSize);
+    points.push(isUp ? y + beginAnchor : y - beginAnchor);
   }
 
   points.push(x1);
@@ -40,9 +41,9 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
   points.push(x2);
   points.push(y);
 
-  if (isMain && isAnchorEnd) {
+  if (isMain && endAnchor && endAnchor > 0) {
     points.push(x2);
-    points.push(isUp ? y + anchorSize : y - anchorSize);
+    points.push(isUp ? y + endAnchor : y - endAnchor);
   }
   return (
     <>
@@ -67,7 +68,7 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
 
       />
       {/* Label */}
-      <Text x={labelX} y={labelY} text={`${label} (${(x2 - x1).toFixed(2)}${unit})`} fontSize={DEFAULT_LABEL_FONT_SIZE} align="center"
+      <Text x={labelX} y={labelY} text={`${label} (${((x2 - x1) / LENGTH_SCALE).toFixed(2)}${unit})`} fontSize={DEFAULT_LABEL_FONT_SIZE} align="center"
         fill={isMain ? DEFAULT_LABEL_MAIN_COLOR : DEFAULT_LABEL_SECONDARY_COLOR}
         shadowColor={isClicked ? DEFAULT_BLUR_COLOR : isMain ? DEFAULT_BAR_MAIN_COLOR : DEFAULT_BAR_SECONDARY_COLOR}
         shadowBlur={isClicked ? 10 : 0}
