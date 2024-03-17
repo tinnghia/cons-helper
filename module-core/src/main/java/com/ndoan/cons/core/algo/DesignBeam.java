@@ -9,20 +9,53 @@ import java.util.List;
 
 public class DesignBeam {
 
-    static SafeLapPointFinderImpl safeLapPointFinder = new SafeLapPointFinderImpl();
-    static RealBarArranger realBarArranger = new RealBarArrangerWithIncreasingDelta();
+    SafeLapPointFinderImpl safeLapPointFinder;
+    RealBarArranger realBarArranger;
 
-    static TopMainBarFinder topMainBarFinder = new TopMainBarFinder(safeLapPointFinder, realBarArranger);
-    static BottomMainBarFinder bottomMainBarFinder = new BottomMainBarFinder(safeLapPointFinder, realBarArranger);
+    TopMainBarFinder topMainBarFinder;
+    BottomMainBarFinder bottomMainBarFinder;
 
-    static BeamInputProcessor beamInputProcessor = new BeamInputProcessorImpl();
+    BeamInputProcessor beamInputProcessor;
 
-    public BeamOutputData designBeam(BeamInputData inputData) {
+    public DesignBeam() {
+        safeLapPointFinder = new SafeLapPointFinderImpl();
+        realBarArranger = new RealBarArrangerWithIncreasingDelta();
+
+        topMainBarFinder = new TopMainBarFinder(safeLapPointFinder, realBarArranger);
+        bottomMainBarFinder = new BottomMainBarFinder(safeLapPointFinder, realBarArranger);
+
+        beamInputProcessor = new BeamInputProcessorImpl();
+    }
+
+    public BeamOutputData design(BeamInputData inputData) {
         BeamOutputData outputData = new BeamOutputData();
+        inputData = beamInputProcessor.processInput(inputData);
+
+        List<SolutionMainBar> topBars = topMainBarFinder.find(inputData);
+        List<SolutionMainBar> bottomBars = bottomMainBarFinder.find(inputData);
+
+        List<SolutionMainBar> pickedTopBars = new ArrayList<>();
+        List<SolutionMainBar> pickedBottomBars = new ArrayList<>();
+
+        for (int i = 0; i < inputData.getNumberOfTopBars(); i++) pickedTopBars.add(topBars.get(i));
+        for (int i = 0; i < inputData.getNumberOfBottomBars(); i++) pickedBottomBars.add(bottomBars.get(i));
+
+        List<SolutionMainBar> allPicked = new ArrayList<>();
+        allPicked.addAll(pickedTopBars);
+        allPicked.addAll(pickedBottomBars);
+        boolean checkTop = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(pickedTopBars);
+        boolean checkBottom = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(pickedBottomBars);
+        boolean checkAllMeet = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(allPicked);
+
+        System.out.println("checkTop = " + checkTop + ", checkBottom" + checkBottom + ", checkAllMeet" + checkAllMeet);
+
+        outputData.setTopBars(pickedTopBars);
+        outputData.setBottomBars(pickedBottomBars);
         return outputData;
     }
 
     public static void main(String[] args) {
+        DesignBeam designBeam = new DesignBeam();
         BeamInputData inputData = new BeamInputData();
 
         inputData.setStandardBarLength(11700); //mm
@@ -35,24 +68,8 @@ public class DesignBeam {
         inputData.setMainBarDiameter(22); //d22 = 22mm
         inputData.setTopSafeZoneAwayFromColumn(0.25);
 
-        inputData = beamInputProcessor.processInput(inputData);
-        List<SolutionMainBar> topBars = topMainBarFinder.find(inputData);
-        List<SolutionMainBar> bottomBars = bottomMainBarFinder.find(inputData);
+        designBeam.design(inputData);
 
-
-        List<SolutionMainBar> pickedTopBars = new ArrayList<>();
-        List<SolutionMainBar> pickedBottomBars = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) pickedTopBars.add(topBars.get(i));
-        for (int i = 0; i < 10; i++) pickedBottomBars.add(bottomBars.get(i));
-        List<SolutionMainBar> allPicked = new ArrayList<>();
-        allPicked.addAll(pickedTopBars);
-        allPicked.addAll(pickedBottomBars);
-        boolean checkTop = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(pickedTopBars);
-        boolean checkBottom = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(pickedBottomBars);
-        boolean checkAllMeet = DesignBeamHelpers.checkMainBarsMeet50PercentCondition(allPicked);
-
-        System.out.println("checkTop = " + checkTop + ", checkBottom" + checkBottom + ", checkAllMeet" + checkAllMeet);
 
     }
 

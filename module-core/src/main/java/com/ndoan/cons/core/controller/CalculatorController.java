@@ -2,6 +2,9 @@ package com.ndoan.cons.core.controller;
 
 import com.ndoan.cons.core.dto.InputData;
 import com.ndoan.cons.core.dto.OutputData;
+import com.ndoan.cons.core.model.BeamInputData;
+import com.ndoan.cons.core.model.BeamOutputData;
+import com.ndoan.cons.core.service.BeamDesignService;
 import com.ndoan.cons.core.service.CalculatorService;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ import java.io.IOException;
 public class CalculatorController {
     @Autowired
     CalculatorService calculatorService;
+
+    @Autowired
+    BeamDesignService beamDesignService;
 
     @PostMapping("/calculators/optimize")
     public ResponseEntity<OutputData> optimizeCut(@RequestBody InputData inputData) {
@@ -54,6 +60,11 @@ public class CalculatorController {
                 .contentType(mediaType)
                 .contentLength(file.length())
                 .body(resource);
+    }
+
+    @PostMapping("/calculators/design")
+    public ResponseEntity<BeamOutputData> optimizeCut(@RequestBody BeamInputData inputData) {
+        return ResponseEntity.ok(beamDesignService.design(inputData));
     }
 }
 
