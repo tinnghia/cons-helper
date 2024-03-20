@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
-import "./BeamCanvas.css";
 import BeamAxis, { AXIS_HEIGHT, AXIS_MARGIN_TOP } from '../beam/BeamAxis';
 import MainBar from '../beam/MainBar';
+import "./BeamCanvas.css";
 
-const DotVerticalLines = ({ topBars, bottomBars, indexes }) => {
+interface BeamCanvasProps {
+  topBars?: any[];
+  bottomBars?: any[];
+  indexes?: any[]
+};
+
+const DotVerticalLines: React.FC<BeamCanvasProps> = ({ topBars, bottomBars, indexes }) => {
   // Calculate the vertical offset for the second line
   const strokeWidth = 4;
   const offset = strokeWidth + 10;
@@ -13,20 +19,25 @@ const DotVerticalLines = ({ topBars, bottomBars, indexes }) => {
   return (
     <Layer>
       <BeamAxis indexes={indexes}></BeamAxis>
-      {topBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index+1}></MainBar>
+      {topBars && topBars.map((bar, index) => (
+        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index + 1}></MainBar>
       ))}
 
-      {bottomBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS +  AXIS_HEIGHT/2} isUp={false} bars={bar.bars} label={index+1}></MainBar>
+      {bottomBars && bottomBars.map((bar, index) => (
+        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS + AXIS_HEIGHT / 2} isUp={false} bars={bar.bars} label={index + 1}></MainBar>
       ))}
     </Layer>
   );
 };
 
-const BeamCanvas = ({ topBars, bottomBars, indexes }) => {
-  const [scale, setScale] = useState(2);
+interface BeamCanvasDefineProps {
+  topBars?: any[];
+  bottomBars?: any[];
+  indexes?: any[]
+};
 
+const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars, indexes }, ref) => {
+  const [scale, setScale] = useState(2);
   const handleScaleIn = () => {
     setScale(scale * 1.1);
   };
@@ -34,6 +45,17 @@ const BeamCanvas = ({ topBars, bottomBars, indexes }) => {
   const handleScaleOut = () => {
     setScale(scale / 1.1);
   };
+
+  const handleZoomTo = (action: string, span: any) => {
+  };
+
+  // Forwarding the ref to the component
+  useImperativeHandle(ref, () => ({
+    handleZoomTo: handleZoomTo
+  }));
+
+  const stageRef = useRef<any>();
+
   return (
     <div>
       <div>
@@ -52,12 +74,12 @@ const BeamCanvas = ({ topBars, bottomBars, indexes }) => {
           </svg>
         </button>
       </div>
-      <Stage width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale}>
+      <Stage draggable width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale}>
         {/* Dot Vertical Lines */}
         <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} />
       </Stage>
     </div>
   );
-};
+});
 
 export default BeamCanvas;

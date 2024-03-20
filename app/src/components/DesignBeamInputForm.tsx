@@ -6,7 +6,18 @@ interface SpanLength {
     length: string;
 }
 
-const DesignBeamInputForm: FunctionComponent<{ show: boolean, onResult: (outputData: any) => void }> = ({ show, onResult }) => {
+interface BeamInputFormProps {
+    show: boolean,
+    onResult: (outputData: any) => void,
+    onSpanAction: (action: string, span: any) => void
+    onFirstIndexChange: (value: string) => void,
+    onLastIndexChange: (value: string) => void
+}
+
+export const ADD_SPAN_ACTION = 'add';
+export const REMOVE_SPAN_ACTION = 'remove';
+
+const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange }) => {
     const [unit, setUnit] = useState('mm');
     const [findex, setFindex] = useState('first');
     const [sindex, setSindex] = useState('last');
@@ -33,10 +44,12 @@ const DesignBeamInputForm: FunctionComponent<{ show: boolean, onResult: (outputD
 
     const handleFindexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setFindex(e.target.value);
+        onFirstIndexChange(e.target.value);
     };
 
     const handleSindexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSindex(e.target.value);
+        onLastIndexChange(e.target.value);
     };
 
     const handleBarLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +133,7 @@ const DesignBeamInputForm: FunctionComponent<{ show: boolean, onResult: (outputD
         const updatedSpans = [...spans];
         updatedSpans.splice(index, 1);
         setSpans(updatedSpans);
+        onSpanAction(ADD_SPAN_ACTION, index);
     };
 
     const handleAddSpan = () => {
@@ -128,6 +142,7 @@ const DesignBeamInputForm: FunctionComponent<{ show: boolean, onResult: (outputD
             return;
         setSpans([...spans, { length: newLength }]);
         setNewLength('');
+        onSpanAction(ADD_SPAN_ACTION, newLength);
 
     };
 
@@ -153,7 +168,7 @@ const DesignBeamInputForm: FunctionComponent<{ show: boolean, onResult: (outputD
         for (var i = 0; i < spans.length; i++) {
             lspans.push(parseInt(spans[i].length));
         }
-        console.log('spansspansspans',spans)
+        console.log('spansspansspans', spans)
         postData['spans'] = lspans;
         console.log('postData', postData);
         // POST data to the endpoint

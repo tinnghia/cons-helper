@@ -3,9 +3,10 @@ import "./Home.css";
 import { OutputData } from "../models/OutputData";
 import CuttingInputForm from "./CuttingInputForm";
 import CuttingResultForm from "./CuttingResultForm";
-import DesignBeamInputForm from "./DesignBeamInputForm";
+import DesignBeamInputForm, { ADD_SPAN_ACTION, REMOVE_SPAN_ACTION } from "./DesignBeamInputForm";
 import DesignBeamResultForm from "./DesignBeamResultForm";
 import { BeamOutputData } from "../models/BeamOutputData";
+import DesignBeamViewerForm from "./DesignBeamViewerForm";
 
 export default function Home() {
 
@@ -32,12 +33,20 @@ export default function Home() {
 
     const [isResizing, _setIsResizing] = useState(false);
     const resizingRef = React.useRef(isResizing);
+
+    const [findex, setFindex] = useState('first');
+    const [lindex, setLindex] = useState('last');
+
+    //indexes for beam viewer
+    const [indexes, setIndexes] = useState<any>([]);
     const setIsResizing = (data: any) => {
         resizingRef.current = data;
         _setIsResizing(data);
     };
     const inputSectionRef = useRef<any>(null);
     const resultSectionRef = useRef<any>(null);
+
+    const designBeamViewRef = useRef<any>(null);
 
     const handleCuttingBack = () => {
 
@@ -46,6 +55,7 @@ export default function Home() {
     const onHandleDesignResult = (outputData: BeamOutputData) => {
         setOutputDesignData(outputData);
         console.log('setOutputDesignData', outputData);
+        setIndexes(outputData?.indexes);
         SetIsShowDesignResult(true);
     }
 
@@ -117,6 +127,31 @@ export default function Home() {
         }
     }
 
+    const onSpanAction = (action: string, span: any) => {
+        let updatedIndexes;
+        if (action === ADD_SPAN_ACTION) {
+            setIndexes([...indexes, span]);
+            updatedIndexes = [...indexes, span];
+        } else if (action === REMOVE_SPAN_ACTION) {
+            updatedIndexes = [...indexes];
+            updatedIndexes.splice(span, 1);
+            setIndexes(updatedIndexes);
+        }
+
+        if (designBeamViewRef.current) {
+            designBeamViewRef.current.hanlleSpanAction(action, span, updatedIndexes);
+        }
+    }
+
+    const onFirstIndexChange = (value: string) => {
+        console.log('onFirstIndexChange',value)
+        setFindex(value);
+    }
+    const onLastIndexChange = (value: string) => {
+        console.log('onLastIndexChange',value)
+        setLindex(value);
+    }
+
     return (
         <div className="container">
             <header>
@@ -141,7 +176,7 @@ export default function Home() {
             </nav>
             <main>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth }}>
-                    {activeTool === 'beam' && <DesignBeamInputForm onResult={onHandleDesignResult} show={isShowLeft}></DesignBeamInputForm>}
+                    {activeTool === 'beam' && <DesignBeamInputForm onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange}></DesignBeamInputForm>}
                     {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
@@ -173,6 +208,7 @@ export default function Home() {
 
                             {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
                             )}
+                            {!isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
                         </div>
                     </div>
                     <div id="history" className={activeTab === 'history' ? "tabcontent active" : "tabcontent"}>
