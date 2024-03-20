@@ -7,6 +7,7 @@ import DesignBeamInputForm, { ADD_SPAN_ACTION, REMOVE_SPAN_ACTION } from "./Desi
 import DesignBeamResultForm from "./DesignBeamResultForm";
 import { BeamOutputData } from "../models/BeamOutputData";
 import DesignBeamViewerForm from "./DesignBeamViewerForm";
+import ListBeam from "./ListBeam";
 
 export default function Home() {
 
@@ -17,7 +18,8 @@ export default function Home() {
     const [isShowDesignResult, SetIsShowDesignResult] = useState(false);
 
     const [isShowLeft, SetIsShowLeft] = useState(true);
-    const [inputWidth, setInputWidth] = useState('50%');
+    const [treeWidth, setTreeWidth] = useState('10%');
+    const [inputWidth, setInputWidth] = useState('40%');
     const [resultWidth, setResultWidth] = useState('50%');
     const [splitterCursor, setSplitterCursor] = useState('col-resize');
     const [svgLeftDisplay, setSvgLeftDisplay] = useState('block');
@@ -112,13 +114,15 @@ export default function Home() {
     const toggleInputSection = () => {
         if (inputWidth === "0px" || inputWidth === "") {
             SetIsShowLeft(true);
-            setInputWidth('50%');
+            setTreeWidth('10%');
+            setInputWidth('35%');
             setResultWidth('50%');
             setSplitterCursor('col-resize');
             setSvgLeftDisplay('block');
             setSvgRightDisplay('none');
         } else {
             SetIsShowLeft(false);
+            setTreeWidth('0px');
             setInputWidth('0px');
             setResultWidth('100%');
             setSplitterCursor('pointer');
@@ -144,11 +148,11 @@ export default function Home() {
     }
 
     const onFirstIndexChange = (value: string) => {
-        console.log('onFirstIndexChange',value)
+        console.log('onFirstIndexChange', value)
         setFindex(value);
     }
     const onLastIndexChange = (value: string) => {
-        console.log('onLastIndexChange',value)
+        console.log('onLastIndexChange', value)
         setLindex(value);
     }
 
@@ -175,7 +179,10 @@ export default function Home() {
                 </ul>
             </nav>
             <main>
-                <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth }}>
+                <div className="left-column" style={{border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
+                    <ListBeam show={isShowLeft}></ListBeam>
+                </div>
+                <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
                     {activeTool === 'beam' && <DesignBeamInputForm onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange}></DesignBeamInputForm>}
                     {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
