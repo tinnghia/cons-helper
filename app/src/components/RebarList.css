@@ -1,0 +1,129 @@
+.rebar-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    /* Adjust the gap between accordions */
+}
+
+/* Adjust styles for the Accordion component as needed */
+.accordion {
+    width: calc(100% - 10px);
+    /* Adjust the width of each accordion */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.accordion-header {
+    background-color: #f0f0f0;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-icon {
+    margin-left: auto;
+    background-color: transparent;
+    transition: transform 0.3s ease;
+}
+
+.accordion-icon.expanded {
+    transform: rotate(90deg);
+}
+
+.accordion-content {
+    padding: 0 10px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.accordion-content .barItem {
+    margin-bottom: 10px;
+}
+
+.barTextItem {
+    display: flex;
+    align-items: center;
+}
+
+.barTextItem span {
+    margin-right: 5px;
+}
+
+.barItemBtn {
+    margin-left: 10px;
+}
+
+
+
+.inputRebarCls label {
+    margin-right: 5px;
+    margin-top: 10px;
+    /* Add spacing between label and input */
+}
+
+
+.inputRebarCls input {
+    margin-right: 5px;
+    margin-left: 5px;
+    width: calc(30% - 50px) !important;
+    padding: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+    /* Add spacing between label and input */
+}
+
+.buttonSectionCls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    /* Add margin between inputSubSectionCls and button */
+}
+
+.inputRebarCls {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    /* Align items vertically in the center */
+    align-items: center;
+    /* Align items vertically in the center */
+    justify-content: center;
+    /* Center items horizontally */
+}
+
+
+
+
+
+/*******/
+.inputRebarCls {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.inputGroup1,
+.inputGroup2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+    /* Set width to 100% */
+}
+
+.inputGroup1 label,
+.inputGroup2 label {
+    margin-right: 10px;
+}
+
+.smallSelect {
+    width: 80px;
+}
+
+.buttonSectionCls {
+    text-align: center;
+}

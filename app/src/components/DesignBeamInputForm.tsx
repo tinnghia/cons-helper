@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import "./DesignBeamInputForm.css";
-import { OutputData } from '../models/OutputData';
+import RebarList from './RebarList';
 
 interface SpanLength {
     length: string;
@@ -16,6 +16,30 @@ interface BeamInputFormProps {
 
 export const ADD_SPAN_ACTION = 'add';
 export const REMOVE_SPAN_ACTION = 'remove';
+
+
+const options = [
+    { value: '1', label: 'image1.png', image: 'image1.png' },
+    { value: '2', label: 'image2.png', image: 'image2.png' },
+    { value: '3', label: 'image3.png', image: 'image3.png' }
+];
+
+// Sample data for the accordition
+const initRebarList = [
+    {
+        id: 1,
+        name: 'Rebar 1',
+        value: '100',
+        columnIndex: 'column1'
+    },
+    {
+        id: 2,
+        name: 'Rebar 2',
+        value: '100',
+        columnIndex: 'column2'
+    }
+];
+
 
 const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange }) => {
     const [unit, setUnit] = useState('mm');
@@ -35,6 +59,8 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
     const [error, setError] = useState<string>('');
     const [newLength, setNewLength] = useState<string>('');
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState('common');
+    const [expandedColumnIndex, setExpandedColumnIndex] = useState('');
 
 
 
@@ -198,10 +224,19 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
 
     };
 
+    const openTab = (tabName: string) => {
+        setActiveTab(tabName);
+    };
+
     return (
         <div className={show ? "bodyCls" : "bodyCls hide"}>
+            <div className="tab">
+                <button className={activeTab === 'common' ? "tablinks active" : "tablinks"} onClick={() => openTab('common')}>COMMON PROPERTIES</button>
+                <button className={activeTab === 'span' ? "tablinks active" : "tablinks"} onClick={() => openTab('span')}>DESIGN SPAN</button>
+                <button className={activeTab === 'rebar' ? "tablinks active" : "tablinks"} onClick={() => openTab('rebar')}>Design Rebar</button>
+            </div>
             <form className="bar-form">
-                <div className='left-form'>
+                <div className={`left-form ${activeTab === 'common' ? 'show' : ''}`}>
                     <div className="form-group">
                         <label htmlFor="unit">Unit:</label>
                         <select id="unit" value={unit} onChange={handleUnitChange}>
@@ -214,7 +249,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
                         <input type="number" id="mainBarDiameter" value={mainBarDiameter} onChange={handleMainBarDiameterChange} />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="barLength">Diameter of reinforcement bar</label>
+                        <label htmlFor="barLength">Diameter of Rebar</label>
                         <input type="number" id="rifBarDiameter" value={rifBarDiameter} onChange={handleRifBarDiameterChange} />
                     </div>
                     <div className="form-group">
@@ -246,7 +281,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
                         <input type="number" id="bottomMainBars" value={bottomMainBars} onChange={handleBottomMainBarsChange} />
                     </div>
                 </div>
-                <div className='right-form'>
+                <div className={`right-form ${activeTab === 'span' ? 'show' : ''}`} >
                     <div className="form-group columnIndexCls">
                         <label htmlFor="barLength">First Column Index</label>
                         <select id="findex" value={findex} onChange={handleFindexChange}>
@@ -267,7 +302,9 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
                                 <label>Span Length:</label>
                                 <input type="number" className='inputNumberCls' value={newLength} onChange={handleNewLengthChange} />
                             </div>
-                            <button type='button' onClick={handleAddSpan}>Add</button>
+                            <div className="buttonSectionCls">
+                                <button type='button' onClick={handleAddSpan}>Add</button>
+                            </div>
                         </div>
 
                         <div className="error-message">{error}</div>
@@ -287,6 +324,46 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
                             }
 
                         </div>
+                    </div>
+                </div>
+
+                <div className={`right-form ${activeTab === 'rebar' ? 'show' : ''}`} >
+                    <div className="form-group">
+                        <div className="inputRebarCls">
+                            <div className="inputGroup1">
+                                <label id="columnIndex">Column</label>
+                                <select id="columnIndex" className="smallSelect">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                                <label id="position">Position</label>
+                                <select id="position" className="smallSelect">
+                                    <option value="top">Top</option>
+                                    <option value="bottom">Bottom</option>
+                                </select>
+                                <label id="rebarType">Type</label>
+                                <select id="rebarType" className="smallSelect">
+                                    <option value="1">|---</option>
+                                    <option value="2">---|---</option>
+                                    <option value="3">---|-</option>
+                                </select>
+                            </div>
+                            <div className="inputGroup2">
+                                <label id="length">Length</label>
+                                <input type="number" id="length" value="1" />
+                                <label id="number">Number</label>
+                                <input type="number" id="number" value="1" />
+                            </div>
+                            <div className="buttonSectionCls">
+                                <button type="button">Add</button>
+                            </div>
+                        </div>
+
+
+
+
+                        <div className="error-message">{error}</div>
+                        <RebarList barItems={initRebarList} expandedColumnIndex={expandedColumnIndex}></RebarList>
                     </div>
                 </div>
                 <div className="form-group">
