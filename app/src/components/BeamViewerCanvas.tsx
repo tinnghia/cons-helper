@@ -48,7 +48,6 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
   };
 
   const handleZoomTo = (action: string, span: any, sum:any) => {
-    console.log('handleZoomTo', action, span, sum)
     handleNewSpan(sum);
   };
 
@@ -61,14 +60,9 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
 
   const handleNewSpan = (sum: any) => {
     const x = parseInt(sum) * LENGTH_SCALE + AXIS_MARGIN_LEFT;
-    console.log("sum x", sum, x)
     const newStartX = x;
     const newTargetScale = 2; // Example scale (zoom level)
     const newEndX = x * newTargetScale ;
-
-    console.log('newStartX', - newEndX)
-    console.log('newEndX', newEndX)
-    console.log('currentX', stageRef.current.x(), stageRef.current.y())
 
     const newTargetX = newEndX; // Example X-coordinate
 

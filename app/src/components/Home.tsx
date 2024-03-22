@@ -158,11 +158,9 @@ export default function Home() {
     }
 
     const onFirstIndexChange = (value: string) => {
-        console.log('onFirstIndexChange', value)
         setFindex(value);
     }
     const onLastIndexChange = (value: string) => {
-        console.log('onLastIndexChange', value)
         setLindex(value);
     }
 
@@ -171,7 +169,6 @@ export default function Home() {
     };
 
     const handleBeamSelectedChange = (node: BeamNode | undefined) => {
-        console.log('handleBeamSelectedChange', node)
         setSelectedBeam(node);
     }
 

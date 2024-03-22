@@ -15,7 +15,6 @@ const BeamAxis = ({ indexes }) => {
     const verticalLines = indexes.map((idx, index) => {
         // Calculate the x-coordinate of the current vertical line
         const x = idx * LENGTH_SCALE + AXIS_MARGIN_LEFT;
-        console.log('mapping', idx, x)
         return { x, y: AXIS_MARGIN_TOP };
     });
     const yAxisX1 = 0; //verticalLines[0].x - YAXIS_OVER_LEFT_RIGHT;

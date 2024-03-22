@@ -25,7 +25,6 @@ const CuttingResultForm: React.FC<ResultFormProps> = (OutputData) => {
             link.href = url;
 
             const contentDispositionHeader = response.headers.get('Content-Disposition');
-            console.log('response.headers', contentDispositionHeader)
             const filename = contentDispositionHeader ? contentDispositionHeader.split('filename=')[1] : 'downloaded_file';
 
             // Set the filename for download

@@ -75,7 +75,6 @@ const RebarList: FunctionComponent<{ barItems: any[], expandedColumnIndex: strin
   useEffect(() => {
     setExpandedIndex(expandedColumnIndex);
     setUniqueColumnIndexes(Array.from(new Set(barItems.map((item) => item.columnIndex))))
-    console.log('barItems',barItems)
 
   }, [expandedColumnIndex,barItems]);
 

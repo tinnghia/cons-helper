@@ -174,7 +174,6 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
     };
 
     const handleAddSpan = () => {
-        console.log(spans)
         if (newLength == '')
             return;
         setSpans([...spans, { length: newLength }]);
@@ -206,15 +205,12 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
     };
 
     const handleAddRebar = () => {
-        console.log(spans, expandedColumnIndex, rebarLength, rebarNumber)
         if (expandedColumnIndex === '' || rebarLength === '' || rebarNumber === '')
             return;
         setRebarList([...rebarList, {
             length: rebarLength, columnIndex: expandedColumnIndex,
             number: rebarNumber, position: rebarPosition, type: rebarType
         }]);
-
-        console.log('rebarlist', rebarList)
 
     };
     const handleRebarLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {

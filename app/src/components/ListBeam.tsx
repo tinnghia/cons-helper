@@ -30,7 +30,6 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
         setEditable(true);
 
         const spanElement = spanRef.current;
-        console.log('handleDoubleClick', spanElement)
         if (!spanElement) return; // Guard clause to handle null ref
 
         const range = document.createRange();
@@ -43,10 +42,8 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
         selection.addRange(range);
         // Use type assertion to assert the type of spanElement
         const childNodes = (spanElement as HTMLElement).childNodes;
-        console.log('childNodes', childNodes)
         if (childNodes && childNodes.length > 0) {
             const textNode = childNodes[0] as Text;
-            console.log('textNode', textNode)
             const rangeEnd = document.createRange();
             rangeEnd.setStart(textNode, textNode.length);
             rangeEnd.collapse(true);
@@ -57,7 +54,6 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
     };
 
     const handleBlur = () => {
-        console.log('handleBlur')
         setEditable(false);
     };
 
@@ -85,13 +81,11 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
 
     const handleClick = (e: any) => {
         onSelect();
-        console.log('handleClick', e)
         setIsOpen(!isOpen);
     };
 
     const handleContextMenu = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         event.preventDefault();
-        console.log('handleContextMenu')
         onSelect();
     };
 
@@ -191,7 +185,6 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
 
     const focusOnNewBeam = (newId: number) => {
         const newItemRef = newBeamRefs.current[newId];
-        console.log('focusOnNewBeam', newItemRef)
         if (newItemRef) {
             newItemRef.focus();
         }
@@ -229,7 +222,6 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
                     onLabelChange={handleLabelChange} onDelete={handleDelete}
                     ref={ref => {
                         if (ref && !newBeamRefs.current[beam.id]) {
-                            console.log('adding new', beam.id)
                             newBeamRefs.current[beam.id] = ref;
                         }
                     }} />
@@ -280,7 +272,6 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
     }
 
     const handleUpdateBeam = (id: number, beam: BeamDataProps) => {
-        console.log('handleUpdateBeam', id, beam)
     }
     useImperativeHandle(ref, () => ({
         handleUpdateBeam: handleUpdateBeam
@@ -306,7 +297,6 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         for (var i = 0; i < node.beam.spans.length; i++) {
             lspans.push(parseInt(node.beam.spans[i].length));
         }
-        console.log('spansspansspans', node.beam.spans)
         postData['spans'] = lspans;
         return postData;
     }
@@ -369,7 +359,6 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
     }
 
     const onHandleSelectedChange = (node: BeamNode) => {
-        console.log('onHandleSelectedChange')
         onSelectedChange(node);
     }
 

@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 import "./CuttingInputForm.css";
 import { OutputData } from '../models/OutputData';
+import appConfig from '../config/config.json';
 
 interface DividedBar {
     length: string;
@@ -50,7 +51,6 @@ const CuttingInputForm: FunctionComponent<{ show: boolean, onResult: (outputData
     };
 
     const handleAddDividedBar = () => {
-        console.log(dividedBars)
         if (newLength == '' || newNumberOfBars == '')
             return;
         if (dividedBars.filter(n => n["length"] == newLength).length > 1) {
@@ -68,7 +68,6 @@ const CuttingInputForm: FunctionComponent<{ show: boolean, onResult: (outputData
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         // Prepare data to be sent
-        console.log(dividedBars)
         setIsProcessing(true);
         const postData: any = {};
         postData['unit'] = unit;
@@ -79,7 +78,7 @@ const CuttingInputForm: FunctionComponent<{ show: boolean, onResult: (outputData
         }
         console.log('postData', postData);
         // POST data to the endpoint
-        await fetch('http://localhost:8080/api/calculators/optimize', {
+        await fetch(`${appConfig.backendUrl}/api/calculators/optimize`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
