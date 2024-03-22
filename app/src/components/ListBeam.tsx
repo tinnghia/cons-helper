@@ -206,7 +206,6 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
         if (beamData.length > prevBeamDataRef.current.length) { // Assuming new item added
             const newBeam = beamData.find(beam => !prevBeamDataRef.current.some(prevBeam => prevBeam.id === beam.id));
             const newBeamId = newBeam ? newBeam.id : null;
-            console.log('newBeamIdnewBeamIdnewBeamId', newBeamId)
             if (newBeamId) {
                 focusOnNewBeam(newBeamId);
             }
