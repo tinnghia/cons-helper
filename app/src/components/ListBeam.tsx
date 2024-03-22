@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import { FaEllipsisH, FaPencilAlt, FaPlay, FaPlus, FaTrash } from 'react-icons/fa';
 import { BeamDataProps } from './DesignBeamInputForm';
 import './ListBeam.css';
+import appConfig from '../config/config.json';
 
 export interface BeamNode {
     id: number;
@@ -82,7 +83,7 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
         setIsContextMenuOpen(!isContextMenuOpen);
     };
 
-    const handleClick = (e:any) => {
+    const handleClick = (e: any) => {
         onSelect();
         console.log('handleClick', e)
         setIsOpen(!isOpen);
@@ -252,7 +253,8 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         console.log('postData', postData);
         onRun();
         // POST data to the endpoint
-        await fetch('http://localhost:8080/api/calculators/design', {
+
+        await fetch(`${appConfig.backendUrl}/api/calculators/design`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,8 +1,7 @@
 import React from 'react';
-import "./DesignBeamResultForm.css";
-import DrawBeam from '../DrawBeam';
-import BeamCanvas from './BeamCanvas';
 import { BeamOutputData } from '../models/BeamOutputData';
+import BeamCanvas from './BeamCanvas';
+import "./DesignBeamResultForm.css";
 
 interface ResultFormProps extends BeamOutputData {
     onBack: (event: React.MouseEvent) => void;
