@@ -14,6 +14,7 @@ interface BeamInputFormProps {
     onFirstIndexChange: (value: string) => void,
     onLastIndexChange: (value: string) => void,
     beam?: BeamDataProps,
+    onSave: (id: number, beam: BeamDataProps) => void;
 }
 
 export const ADD_SPAN_ACTION = 'add';
@@ -31,32 +32,32 @@ export interface RebarProps {
 
 export interface BeamDataProps {
     unit: string;
-    standardBarLength: number;
-    mainBarDiameter: number;
-    rifBarDiameter: number
-    labLength: number;
-    anchorLength: number;
-    topMainBars: number
-    bottomMainBars: number
-    topSafeZoneAwayFromColumn: number;
-    bottomSafeZoneFromColumn: number;
-    firstColumnIndex: number;
-    lastColumnIndex: number;
-    spans: [];
+    standardBarLength?: string;
+    mainBarDiameter: string;
+    rifBarDiameter: string
+    labLength: string;
+    anchorLength: string;
+    topMainBars: string
+    bottomMainBars: string
+    topSafeZoneAwayFromColumn: string;
+    bottomSafeZoneFromColumn: string;
+    firstColumnIndex: string;
+    lastColumnIndex: string;
+    spans: any[];
     rebars: RebarProps[]
 }
 
-const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ beam, show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange }) => {
-    const [unit, setUnit] = useState('mm');
-    const [findex, setFindex] = useState('first');
-    const [sindex, setSindex] = useState('last');
-    const [standardBarLength, setStandardBarLength] = useState<string>('11700');
-    const [labLength, setLabLength] = useState<string>('30');
-    const [anchorLength, setAnchorLength] = useState<string>('15');
-    const [mainBarDiameter, setMainBarDiameter] = useState<string>('22');
-    const [rifBarDiameter, setRifBarDiameter] = useState<string>('18');
-    const [topSafeZoneAwayFromColumn, setTopSafeZoneAwayFromColumn] = useState<string>('0.25');
-    const [bottomSafeZoneFromColumn, setBottomSafeZoneFromColumn] = useState<string>('0.25');
+const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange, onSave }) => {
+    const [unit, setUnit] = useState<string>(beam?.unit ?? '');
+    const [findex, setFindex] = useState<string>(beam?.firstColumnIndex ?? '');
+    const [sindex, setSindex] = useState<string>(beam?.lastColumnIndex ?? '');
+    const [standardBarLength, setStandardBarLength] = useState<string>(beam?.standardBarLength ?? '');
+    const [labLength, setLabLength] = useState<string>(beam?.labLength ?? '');
+    const [anchorLength, setAnchorLength] = useState<string>(beam?.anchorLength ?? '');
+    const [mainBarDiameter, setMainBarDiameter] = useState<string>(beam?.mainBarDiameter ?? '');
+    const [rifBarDiameter, setRifBarDiameter] = useState<string>(beam?.rifBarDiameter ?? '');
+    const [topSafeZoneAwayFromColumn, setTopSafeZoneAwayFromColumn] = useState<string>(beam?.topSafeZoneAwayFromColumn ?? '');
+    const [bottomSafeZoneFromColumn, setBottomSafeZoneFromColumn] = useState<string>(beam?.bottomSafeZoneFromColumn ?? '');
     const [topMainBars, setTopMainBars] = useState<string>('');
     const [bottomMainBars, setBottomMainBars] = useState<string>('');
 
@@ -73,7 +74,6 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ beam, show
     const [rebarLength, setRebarLength] = useState('');
     const [rebarNumber, setRebarNumber] = useState('1');
     const [rebarList, setRebarList] = useState<RebarProps[]>([]);
-
 
     const handleUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setUnit(e.target.value);
@@ -224,56 +224,26 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ beam, show
             setRebarLength(newValue.toString());
         }
     };
+    const handleSave = (e: any) => {
+        if (beam) {
+            beam.unit = unit;
+            beam.standardBarLength = standardBarLength;
+            beam.mainBarDiameter = mainBarDiameter;
+            beam.rifBarDiameter = rifBarDiameter;
+            beam.labLength = labLength;
+            beam.anchorLength = anchorLength;
+            beam.topMainBars = topMainBars;
+            beam.bottomMainBars = bottomMainBars;
+            beam.topSafeZoneAwayFromColumn = topSafeZoneAwayFromColumn;
+            beam.bottomSafeZoneFromColumn = bottomSafeZoneFromColumn;
+            beam.firstColumnIndex = findex;
+            beam.lastColumnIndex = sindex;
+            beam.spans = spans;
+            beam.rebars = rebarList;
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        // Prepare data to be sent
-        console.log(spans)
-        setIsProcessing(true);
-        const postData: any = {};
-        postData['unit'] = unit;
-        postData['standardBarLength'] = parseInt(standardBarLength);
-        postData['mainBarDiameter'] = parseInt(mainBarDiameter);
-        postData['rifBarDiameter'] = parseInt(rifBarDiameter);
-        postData['labLength'] = parseInt(labLength);
-        postData['anchorLength'] = parseInt(anchorLength);
-        postData['topMainBars'] = parseInt(topMainBars);
-        postData['bottomMainBars'] = parseInt(bottomMainBars);
-        postData['topSafeZoneAwayFromColumn'] = parseFloat(topSafeZoneAwayFromColumn);
-        postData['bottomSafeZoneFromColumn'] = parseFloat(bottomSafeZoneFromColumn);
-        postData['firstColumnIndex'] = findex === 'first+1' ? 1 : 0;
-        postData['lastColumnIndex'] = sindex === 'last-1' ? spans.length - 2 : spans.length - 1;
-        let lspans = [];
-        for (var i = 0; i < spans.length; i++) {
-            lspans.push(parseInt(spans[i].length));
+            onSave(id ? id : 0, beam);
+
         }
-        console.log('spansspansspans', spans)
-        postData['spans'] = lspans;
-        console.log('postData', postData);
-        // POST data to the endpoint
-        await fetch('http://localhost:8080/api/calculators/design', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('result', data);
-                onResult(data);
-                setIsProcessing(false);
-                console.log('Data posted successfully');
-            })
-            .catch(error => {
-                setIsProcessing(false);
-                console.error('There was a problem with your fetch operation:', error);
-            });
 
     };
 
@@ -424,10 +394,9 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ beam, show
                     </div>
                 </div>
                 <div className="form-group">
-                    <button type="button" onClick={handleSubmit} disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Design'}</button>
+                    <button type="button" onClick={handleSave}>Save</button>
                 </div>
             </form>
-
         </div>
     );
 }

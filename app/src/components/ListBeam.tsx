@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import './ListBeam.css';
-import { FaPlus, FaPlay, FaEllipsisH, FaTrash, FaPencilAlt } from 'react-icons/fa';
+import { FaEllipsisH, FaPencilAlt, FaPlay, FaPlus, FaTrash } from 'react-icons/fa';
 import { BeamDataProps } from './DesignBeamInputForm';
+import './ListBeam.css';
 
 export interface BeamNode {
     id: number;
@@ -170,14 +170,16 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
 interface TreeProps {
     beamData: BeamNode[];
     onLabelChange: (id: number, value: string) => void;
+    onSelectedItemChange: (node: BeamNode) => void;
 }
 // Tree component to render the tree view
-const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange }, ref) => {
+const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedItemChange }, ref) => {
     const [selectedItem, setSelectedItem] = useState<BeamNode | null>(null);
     const newBeamRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
     const handleSelectItem = (item: BeamNode) => {
         setSelectedItem(item);
+        onSelectedItemChange(item);
     };
 
     const prevBeamDataRef = useRef(beamData);
@@ -228,19 +230,87 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange }, ref) => {
     );
 });
 
-const ListBeam: React.FC<{ show: boolean, initBeamData: BeamNode[], onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void }> = ({ show, initBeamData, onBeamDataUpdate }) => {
+interface ListBeamProps {
+    show: boolean, initBeamData: BeamNode[],
+    onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void,
+    onSelectedChange: (node: BeamNode) => void,
+    onRun: () => void;
+}
+const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun }, ref) => {
     const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
     const treeRef = useRef<any>(null);
 
+    const handleRun = async () => {
+        const postData = beamData.map(beam => buildPostData(beam))
+        console.log('postData', postData);
+        onRun();
+        // POST data to the endpoint
+        await fetch('http://localhost:8080/api/calculators/design', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('result', data);
+                //onResult(data);
+                //setIsProcessing(false);
+                console.log('Data posted successfully');
+            })
+            .catch(error => {
+                //setIsProcessing(false);
+                console.error('There was a problem with your fetch operation:', error);
+            });
+    }
+
+    const handleUpdateBeam = (id: number, beam: BeamDataProps) => {
+        console.log('handleUpdateBeam', id, beam)
+    }
+    useImperativeHandle(ref, () => ({
+        handleUpdateBeam: handleUpdateBeam
+    }));
+
+    const buildPostData = (node: BeamNode) => {
+        const postData: any = {};
+        postData['id'] = node.id;
+        postData['name'] = node.name;
+        postData['unit'] = node.beam.unit;
+        postData['standardBarLength'] = parseInt(node.beam.standardBarLength ?? '0');
+        postData['mainBarDiameter'] = parseInt(node.beam.mainBarDiameter ?? '0');
+        postData['rifBarDiameter'] = parseInt(node.beam.rifBarDiameter ?? '0');
+        postData['labLength'] = parseInt(node.beam.labLength ?? '0');
+        postData['anchorLength'] = parseInt(node.beam.anchorLength ?? '0');
+        postData['topMainBars'] = parseInt(node.beam.topMainBars ?? '0');
+        postData['bottomMainBars'] = parseInt(node.beam.bottomMainBars ?? '0');
+        postData['topSafeZoneAwayFromColumn'] = parseFloat(node.beam.topSafeZoneAwayFromColumn ?? '0');
+        postData['bottomSafeZoneFromColumn'] = parseFloat(node.beam.bottomSafeZoneFromColumn ?? '0');
+        postData['firstColumnIndex'] = node.beam.firstColumnIndex === 'first+1' ? 1 : 0;
+        postData['lastColumnIndex'] = node.beam.lastColumnIndex === 'last-1' ? node.beam.spans.length - 2 : node.beam.spans.length - 1;
+        let lspans = [];
+        for (var i = 0; i < node.beam.spans.length; i++) {
+            lspans.push(parseInt(node.beam.spans[i].length));
+        }
+        console.log('spansspansspans', node.beam.spans)
+        postData['spans'] = lspans;
+        return postData;
+    }
     const handleAddChild = () => {
         const newId = beamData.length > 0 ? Math.max(...beamData.map(beam => beam.id)) + 1 : 1;
         const newBeam = newDefaultBeam(newId);
-        const updatedBeamData:BeamNode[] = [...beamData, newBeam]
+        const updatedBeamData: BeamNode[] = [...beamData, newBeam]
         /*setBeamData((prevData: BeamNode[]) => {
             return [...prevData, newBeam]
         });*/
         setBeamData(updatedBeamData);
         onBeamDataUpdate(updatedBeamData);
+        onHandleSelectedChange(newBeam);
         if (treeRef && treeRef.current)
             treeRef.current.focusOnNewBeam(newId);
     };
@@ -262,18 +332,18 @@ const ListBeam: React.FC<{ show: boolean, initBeamData: BeamNode[], onBeamDataUp
     const newDefaultBeam = (newId: number): BeamNode => {
         // Create default values for BeamDataProps
         const defaultBeamData: BeamDataProps = {
-            unit: '',
-            standardBarLength: 0,
-            mainBarDiameter: 0,
-            rifBarDiameter: 0,
-            labLength: 0,
-            anchorLength: 0,
-            topMainBars: 0,
-            bottomMainBars: 0,
-            topSafeZoneAwayFromColumn: 0,
-            bottomSafeZoneFromColumn: 0,
-            firstColumnIndex: 0,
-            lastColumnIndex: 0,
+            unit: 'mm',
+            standardBarLength: '11700',
+            mainBarDiameter: '22',
+            rifBarDiameter: '18',
+            labLength: '30',
+            anchorLength: '15',
+            topMainBars: '0',
+            bottomMainBars: '0',
+            topSafeZoneAwayFromColumn: '0.25',
+            bottomSafeZoneFromColumn: '0.25',
+            firstColumnIndex: '0',
+            lastColumnIndex: '0',
             spans: [],
             rebars: [] // Initialize as empty array
         };
@@ -289,16 +359,19 @@ const ListBeam: React.FC<{ show: boolean, initBeamData: BeamNode[], onBeamDataUp
 
     }
 
+    const onHandleSelectedChange = (node: BeamNode) => {
+        onSelectedChange(node);
+    }
     return (
         <div className={show ? "tree-column" : "tree-column hide"}>
             <div className="button-group">
 
                 <button className="add-child-btn" onClick={handleAddChild}>New Beam<FaPlus className="icon" /></button>
-                <button className="run-all-btn" onClick={handleAddChild}>Run<FaPlay className="icon" /></button>
+                <button className="run-all-btn" onClick={handleRun}>Run<FaPlay className="icon" /></button>
             </div>
-            <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} />
+            <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} onSelectedItemChange={onHandleSelectedChange} />
         </div>
     );
-};
+});
 
 export default ListBeam;

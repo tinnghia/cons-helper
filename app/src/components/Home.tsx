@@ -1,12 +1,14 @@
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
-import "./Home.css";
+import { BeamOutputData } from "../models/BeamOutputData";
 import { OutputData } from "../models/OutputData";
 import CuttingInputForm from "./CuttingInputForm";
 import CuttingResultForm from "./CuttingResultForm";
-import DesignBeamInputForm, { ADD_SPAN_ACTION, REMOVE_SPAN_ACTION } from "./DesignBeamInputForm";
+import DesignBeamInputForm, { ADD_SPAN_ACTION, BeamDataProps, REMOVE_SPAN_ACTION } from "./DesignBeamInputForm";
 import DesignBeamResultForm from "./DesignBeamResultForm";
-import { BeamOutputData } from "../models/BeamOutputData";
 import DesignBeamViewerForm from "./DesignBeamViewerForm";
+import "./Home.css";
 import ListBeam, { BeamNode } from "./ListBeam";
 
 export default function Home() {
@@ -52,6 +54,11 @@ export default function Home() {
     const resultSectionRef = useRef<any>(null);
 
     const designBeamViewRef = useRef<any>(null);
+    const listBeamRef = useRef<any>(null);
+
+    const [showDialog, setShowDialog] = useState(false);
+    const [saveStatus, setSaveStatus] = useState('');
+    const [showLoading, setShowLoading] = useState(false);
 
     const handleCuttingBack = () => {
 
@@ -163,6 +170,27 @@ export default function Home() {
         setBeamList(updatedBeamData);
     };
 
+    const handleBeamSelectedChange = (node: BeamNode) => {
+        console.log('handleBeamSelectedChange', node)
+        setSelectedBeam(node);
+    }
+
+    const handleSaveBeam = (id: number, beam: BeamDataProps) => {
+        if (listBeamRef) {
+            listBeamRef.current.handleUpdateBeam(id, beam);
+            setSaveStatus('success');
+            setShowDialog(true);
+        }
+    }
+    const handleCloseDialog = () => {
+        setShowDialog(false);
+        // Reset save status and status text if needed
+        setSaveStatus('');
+    };
+
+    const handleRun = () => {
+        setShowLoading(true);
+    }
 
     return (
         <div className="container">
@@ -188,10 +216,10 @@ export default function Home() {
             </nav>
             <main>
                 <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate}></ListBeam>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
-                    {activeTool === 'beam' && <DesignBeamInputForm id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange}></DesignBeamInputForm>}
+                    {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}
                     {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
@@ -223,13 +251,35 @@ export default function Home() {
 
                             {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
                             )}
-                            {!isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
+                            {selectedBeam && !isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
                         </div>
                     </div>
                     <div id="history" className={activeTab === 'history' ? "tabcontent active" : "tabcontent"}>
                     </div>
                 </div>
+
+
+                {showDialog && (
+                    <div className="dialog-overlay">
+                        <div className="dialog">
+                            <h2>{saveStatus === 'success' ? 'Success' : 'Error'}</h2>
+                            <p>{saveStatus === 'success' ? 'Save successful!' : 'Save failed. Please try again.'}</p>
+                            <button onClick={handleCloseDialog}>Close</button>
+                        </div>
+                    </div>
+                )}
+
+                {showLoading && (
+                    <div className="loading-dialog">
+                        <div className="loading-content">
+                            <FontAwesomeIcon icon={faSpinner} spin style={{ fontSize: '24px', color: '#007bff' }} />
+                            <span style={{ marginLeft: '0.5em', fontSize: '18px', color: '#007bff' }}>Processing...</span>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
+
+
 }
