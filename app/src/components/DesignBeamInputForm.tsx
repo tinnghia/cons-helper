@@ -73,6 +73,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
     const [rebarType, setRebarType] = useState('1');
     const [rebarLength, setRebarLength] = useState('');
     const [rebarNumber, setRebarNumber] = useState('1');
+    const [rebarDia, setRebarDia] = useState('1');
     const [rebarList, setRebarList] = useState<RebarProps[]>([]);
 
     const handleUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -201,6 +202,14 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setRebarNumber(newValue.toString());
+        }
+    };
+
+    const handleRebarDiaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        //setBarLength(e.target.value);
+        const newValue = parseInt(e.target.value);
+        if (newValue >= 0 || isNaN(newValue)) {
+            setRebarDia(newValue.toString());
         }
     };
 
@@ -376,6 +385,8 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
                                 <input type="number" id="rebarLength" value={rebarLength} onChange={handleRebarLengthChange} />
                                 <label id="rebarNumber_label">Number</label>
                                 <input type="number" id="rebarNumber" value={rebarNumber} onChange={handleRebarNumberChange} />
+                                <label id="rebarDia_label">Dia</label>
+                                <input type="number" id="rebarDia" value={rebarDia} onChange={handleRebarDiaChange} />
                             </div>
                             <div className="buttonSectionCls">
                                 <button type="button" onClick={handleAddRebar}>Add</button>

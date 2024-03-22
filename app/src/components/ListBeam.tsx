@@ -1,8 +1,8 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { FaEllipsisH, FaPencilAlt, FaPlay, FaPlus, FaTrash } from 'react-icons/fa';
+import appConfig from '../config/config.json';
 import { BeamDataProps } from './DesignBeamInputForm';
 import './ListBeam.css';
-import appConfig from '../config/config.json';
 
 export interface BeamNode {
     id: number;
@@ -297,6 +297,7 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
             lspans.push(parseInt(node.beam.spans[i].length));
         }
         postData['spans'] = lspans;
+        postData['rebars'] = node.beam.rebars;
         return postData;
     }
     const handleAddChild = () => {
