@@ -20,7 +20,7 @@ export const REMOVE_SPAN_ACTION = 'remove';
 interface RebarProps {
     length: string;
     number: string;
-    postion: string;
+    position: string;
     type: string;
     columnIndex: string;
 }
@@ -47,7 +47,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
 
     /*** REBAR ***/
     const [expandedColumnIndex, setExpandedColumnIndex] = useState('');
-    const [rebarPosition, setRebarPostion] = useState('top');
+    const [rebarPosition, setRebarPosition] = useState('top');
     const [rebarType, setRebarType] = useState('1');
     const [rebarLength, setRebarLength] = useState('');
     const [rebarNumber, setRebarNumber] = useState('1');
@@ -158,6 +158,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
             return;
         setSpans([...spans, { length: newLength }]);
         setNewLength('');
+        setExpandedColumnIndex((spans.length-1).toString());
         onSpanAction(ADD_SPAN_ACTION, newLength);
 
     };
@@ -168,7 +169,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
     };
 
     const handleRebarPositionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRebarPostion(e.target.value);
+        setRebarPosition(e.target.value);
     };
 
     const handleColumnIndexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -184,13 +185,15 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
     };
 
     const handleAddRebar = () => {
-        console.log(spans)
+        console.log(spans, expandedColumnIndex, rebarLength, rebarNumber)
         if (expandedColumnIndex === '' || rebarLength === '' || rebarNumber === '')
             return;
         setRebarList([...rebarList, {
             length: rebarLength, columnIndex: expandedColumnIndex,
-            number: rebarNumber, postion: rebarPosition, type: rebarType
+            number: rebarNumber, position: rebarPosition, type: rebarType
         }]);
+
+        console.log('rebarlist', rebarList)
 
     };
     const handleRebarLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -363,7 +366,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
                                 <label id="expandedColumnIndex_label">Column</label>
                                 <select id="expandedColumnIndex" className="smallSelect" value={expandedColumnIndex} onChange={handleColumnIndexChange}>
                                     {spans.map((span, index) => (
-                                        <option value={index}>{index + 1}</option>
+                                        <option key={index} value={index}>{index + 1}</option>
                                     ))}
 
                                 </select>

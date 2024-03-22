@@ -46,10 +46,12 @@ const Accordion = forwardRef<any, AccordionProps>(({ title, columnIndex, barItem
         <div className="accordion-content" ref={contentRef}>
           {barItems.map((barItem, index) => (
             <div key={index} className="barItem">
-              <div className="barTextItem">
-                <span className="barLengthCls">{barItem.name}</span>
-                <span>:</span>
-                <span className="barNumberCls">{barItem.value}</span>
+              <div className="rebarTextItem">
+                <span className="rebarLengthCls">{barItem.length}</span>
+                <span>x</span>
+                <span className="rebarNumberCls">{barItem.number}</span>
+                <span className="rebarPositionCls">{barItem.position}</span>
+                <span className="rebarTypeCls">{barItem.type}</span>
               </div>
               <button type="button" className="barItemBtn">Delete</button>
             </div>
@@ -64,6 +66,7 @@ const Accordion = forwardRef<any, AccordionProps>(({ title, columnIndex, barItem
 
 const RebarList: FunctionComponent<{ barItems: any[], expandedColumnIndex: string }> = ({ barItems, expandedColumnIndex }) => {
   const [expandedIndex, setExpandedIndex] = useState<string>('');
+  const[uniqueColumnIndexes,setUniqueColumnIndexes] = useState<string[]>([]);
   // Filter barItems based on columnIndex
   const filteredBarItemsByColumnIndex = (columnIndex: string) => {
     return barItems.filter((item) => item.columnIndex === columnIndex);
@@ -71,9 +74,10 @@ const RebarList: FunctionComponent<{ barItems: any[], expandedColumnIndex: strin
 
   useEffect(() => {
     setExpandedIndex(expandedColumnIndex);
+    setUniqueColumnIndexes(Array.from(new Set(barItems.map((item) => item.columnIndex))))
+    console.log('barItems',barItems)
 
-  }, [expandedColumnIndex]);
-  const uniqueColumnIndexes = Array.from(new Set(barItems.map((item) => item.columnIndex)));
+  }, [expandedColumnIndex,barItems]);
 
   return (
     <div className="rebar-list">
@@ -81,7 +85,7 @@ const RebarList: FunctionComponent<{ barItems: any[], expandedColumnIndex: strin
         <Accordion
           key={columnIndex}
           columnIndex={columnIndex}
-          title={`Column ${columnIndex}`}
+          title={`Column ${ parseInt(columnIndex) + 1}`}
           initExpanded={expandedIndex === columnIndex}
           barItems={filteredBarItemsByColumnIndex(columnIndex)}
         />

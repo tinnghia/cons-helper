@@ -3,6 +3,7 @@
     flex-wrap: wrap;
     gap: 20px;
     /* Adjust the gap between accordions */
+    min-height: 320px;
 }
 
 /* Adjust styles for the Accordion component as needed */
@@ -126,4 +127,41 @@
 
 .buttonSectionCls {
     text-align: center;
+}
+
+
+.rebarLenghCls {
+    color: green;
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+.rebarNumberCls {
+    color: blue;
+    font-weight: bold;
+    margin-left: 5px;
+    font-size: 20px;
+}
+
+.rebarPositionCls {
+    color: blue;
+    font-weight: bold;
+    margin-left: 5px;
+    font-size: 20px;
+    float: right;
+}
+
+.rebarTypeCls {
+    color: blue;
+    font-weight: bold;
+    margin-left: 5px;
+    font-size: 20px;
+    float: right;
+}
+
+.rebarTextItem {
+    /*display: flex;*/
+    align-items: center;
+    width: 70%;
 }
