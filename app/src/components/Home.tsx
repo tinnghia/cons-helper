@@ -170,7 +170,7 @@ export default function Home() {
         setBeamList(updatedBeamData);
     };
 
-    const handleBeamSelectedChange = (node: BeamNode) => {
+    const handleBeamSelectedChange = (node: BeamNode | undefined) => {
         console.log('handleBeamSelectedChange', node)
         setSelectedBeam(node);
     }
@@ -262,9 +262,13 @@ export default function Home() {
                 {showDialog && (
                     <div className="dialog-overlay">
                         <div className="dialog">
-                            <h2>{saveStatus === 'success' ? 'Success' : 'Error'}</h2>
-                            <p>{saveStatus === 'success' ? 'Save successful!' : 'Save failed. Please try again.'}</p>
-                            <button onClick={handleCloseDialog}>Close</button>
+                            <h2 style={{ color: saveStatus === 'success' ? 'green' : 'red', fontSize: '24px', marginBottom: '10px' }}>
+                                {saveStatus === 'success' ? 'Success' : 'Error'}
+                            </h2>
+                            <p style={{ color: '#333', fontSize: '16px', lineHeight: '1.5' }}>
+                                {saveStatus === 'success' ? 'Save Beam successful!' : 'Save failed. Please try again.'}
+                            </p>
+                            <button onClick={handleCloseDialog} style={{ marginTop: '20px' }}>Close</button>
                         </div>
                     </div>
                 )}

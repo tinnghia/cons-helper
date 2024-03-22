@@ -14,11 +14,12 @@ interface TreeItemProps {
     item: BeamNode;
     isSelected: boolean;
     onSelect: () => void;
+    onDelete: (id: number) => void;
     onLabelChange: (id: number, value: string) => void;
 }
 
 // TreeItem component to represent each beam or sub beam
-const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelect, onLabelChange }, ref) => {
+const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelect, onLabelChange, onDelete }, ref) => {
 
     const spanRef = useRef<HTMLSpanElement>(null);
     const [itemName, setItemName] = useState(item.name);
@@ -81,13 +82,15 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
         setIsContextMenuOpen(!isContextMenuOpen);
     };
 
-    const handleClick = () => {
+    const handleClick = (e:any) => {
         onSelect();
+        console.log('handleClick', e)
         setIsOpen(!isOpen);
     };
 
     const handleContextMenu = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         event.preventDefault();
+        console.log('handleContextMenu')
         onSelect();
     };
 
@@ -96,7 +99,7 @@ const TreeItem = forwardRef<any, TreeItemProps>(({ item, id, isSelected, onSelec
         if (action === 'rename') {
             handleDoubleClick();
         } else if (action === 'delete') {
-
+            onDelete(id);
         }
         setIsContextMenuOpen(false);
     };
@@ -171,9 +174,10 @@ interface TreeProps {
     beamData: BeamNode[];
     onLabelChange: (id: number, value: string) => void;
     onSelectedItemChange: (node: BeamNode) => void;
+    onDelete: (id: number) => void;
 }
 // Tree component to render the tree view
-const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedItemChange }, ref) => {
+const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedItemChange, onDelete }, ref) => {
     const [selectedItem, setSelectedItem] = useState<BeamNode | null>(null);
     const newBeamRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
@@ -200,6 +204,9 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
     const handleLabelChange = (id: number, value: string) => {
         onLabelChange(id, value);
     }
+    const handleDelete = (id: number) => {
+        onDelete(id);
+    }
 
     useEffect(() => {
         if (beamData.length > prevBeamDataRef.current.length) { // Assuming new item added
@@ -218,7 +225,7 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
         <div className='list-beam'>
             {beamData.map(beam => (
                 <TreeItem key={beam.id} id={beam.id} item={beam} isSelected={selectedItem === beam} onSelect={() => handleSelectItem(beam)}
-                    onLabelChange={handleLabelChange}
+                    onLabelChange={handleLabelChange} onDelete={handleDelete}
                     ref={ref => {
                         if (ref && !newBeamRefs.current[beam.id]) {
                             console.log('adding new', beam.id)
@@ -233,7 +240,7 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
 interface ListBeamProps {
     show: boolean, initBeamData: BeamNode[],
     onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void,
-    onSelectedChange: (node: BeamNode) => void,
+    onSelectedChange: (node: BeamNode | undefined) => void,
     onRun: () => void;
 }
 const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun }, ref) => {
@@ -360,7 +367,13 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
     }
 
     const onHandleSelectedChange = (node: BeamNode) => {
+        console.log('onHandleSelectedChange')
         onSelectedChange(node);
+    }
+
+    const handleDelete = (id: number) => {
+        setBeamData(prevBeamData => prevBeamData.filter(item => item.id !== id));
+        onSelectedChange(undefined);
     }
     return (
         <div className={show ? "tree-column" : "tree-column hide"}>
@@ -369,7 +382,7 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
                 <button className="add-child-btn" onClick={handleAddChild}>New Beam<FaPlus className="icon" /></button>
                 <button className="run-all-btn" onClick={handleRun}>Run<FaPlay className="icon" /></button>
             </div>
-            <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} onSelectedItemChange={onHandleSelectedChange} />
+            <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} onSelectedItemChange={onHandleSelectedChange} onDelete={handleDelete} />
         </div>
     );
 });
