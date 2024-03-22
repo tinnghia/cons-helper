@@ -7,17 +7,21 @@ interface SpanLength {
 }
 
 interface BeamInputFormProps {
+    id?: number;
     show: boolean,
     onResult: (outputData: any) => void,
     onSpanAction: (action: string, span: any) => void
     onFirstIndexChange: (value: string) => void,
-    onLastIndexChange: (value: string) => void
+    onLastIndexChange: (value: string) => void,
+    beam?: BeamDataProps,
 }
 
 export const ADD_SPAN_ACTION = 'add';
 export const REMOVE_SPAN_ACTION = 'remove';
 
-interface RebarProps {
+
+
+export interface RebarProps {
     length: string;
     number: string;
     position: string;
@@ -25,7 +29,24 @@ interface RebarProps {
     columnIndex: string;
 }
 
-const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange }) => {
+export interface BeamDataProps {
+    unit: string;
+    standardBarLength: number;
+    mainBarDiameter: number;
+    rifBarDiameter: number
+    labLength: number;
+    anchorLength: number;
+    topMainBars: number
+    bottomMainBars: number
+    topSafeZoneAwayFromColumn: number;
+    bottomSafeZoneFromColumn: number;
+    firstColumnIndex: number;
+    lastColumnIndex: number;
+    spans: [];
+    rebars: RebarProps[]
+}
+
+const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ beam, show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange }) => {
     const [unit, setUnit] = useState('mm');
     const [findex, setFindex] = useState('first');
     const [sindex, setSindex] = useState('last');
@@ -158,7 +179,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ show, onRe
             return;
         setSpans([...spans, { length: newLength }]);
         setNewLength('');
-        setExpandedColumnIndex((spans.length-1).toString());
+        setExpandedColumnIndex((spans.length - 1).toString());
         onSpanAction(ADD_SPAN_ACTION, newLength);
 
     };

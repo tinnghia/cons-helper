@@ -1,24 +1,13 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import './ListBeam.css';
 import { FaPlus, FaPlay, FaEllipsisH, FaTrash, FaPencilAlt } from 'react-icons/fa';
+import { BeamDataProps } from './DesignBeamInputForm';
 
-interface BeamNode {
+export interface BeamNode {
     id: number;
     name: string;
-    children?: BeamNode[];
+    beam: BeamDataProps;
 }
-
-// Sample data for the tree view
-const initialBeamData = [
-    {
-        id: 1,
-        name: 'Beam A'
-    },
-    {
-        id: 2,
-        name: 'Beam B'
-    }
-];
 
 interface TreeItemProps {
     id: number;
@@ -239,18 +228,19 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange }, ref) => {
     );
 });
 
-const ListBeam: React.FC<{ show: boolean }> = ({ show }) => {
-    const [beamData, setBeamData] = useState<BeamNode[]>([]);
+const ListBeam: React.FC<{ show: boolean, initBeamData: BeamNode[], onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void }> = ({ show, initBeamData, onBeamDataUpdate }) => {
+    const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
     const treeRef = useRef<any>(null);
 
     const handleAddChild = () => {
         const newId = beamData.length > 0 ? Math.max(...beamData.map(beam => beam.id)) + 1 : 1;
-        const newBeam = {
-            id: newId,
-            name: `New Beam ${newId}`,
-            children: []
-        };
-        setBeamData(prevData => [...prevData, newBeam]);
+        const newBeam = newDefaultBeam(newId);
+        const updatedBeamData:BeamNode[] = [...beamData, newBeam]
+        /*setBeamData((prevData: BeamNode[]) => {
+            return [...prevData, newBeam]
+        });*/
+        setBeamData(updatedBeamData);
+        onBeamDataUpdate(updatedBeamData);
         if (treeRef && treeRef.current)
             treeRef.current.focusOnNewBeam(newId);
     };
@@ -267,6 +257,36 @@ const ListBeam: React.FC<{ show: boolean }> = ({ show }) => {
                 return item;
             });
         });
+    }
+
+    const newDefaultBeam = (newId: number): BeamNode => {
+        // Create default values for BeamDataProps
+        const defaultBeamData: BeamDataProps = {
+            unit: '',
+            standardBarLength: 0,
+            mainBarDiameter: 0,
+            rifBarDiameter: 0,
+            labLength: 0,
+            anchorLength: 0,
+            topMainBars: 0,
+            bottomMainBars: 0,
+            topSafeZoneAwayFromColumn: 0,
+            bottomSafeZoneFromColumn: 0,
+            firstColumnIndex: 0,
+            lastColumnIndex: 0,
+            spans: [],
+            rebars: [] // Initialize as empty array
+        };
+
+        // Create a default BeamNode object
+        const defaultBeam: BeamNode = {
+            id: newId,
+            name: `New Beam ${newId}`,
+            beam: defaultBeamData
+        };
+
+        return defaultBeam;
+
     }
 
     return (

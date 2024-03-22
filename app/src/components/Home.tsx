@@ -7,9 +7,12 @@ import DesignBeamInputForm, { ADD_SPAN_ACTION, REMOVE_SPAN_ACTION } from "./Desi
 import DesignBeamResultForm from "./DesignBeamResultForm";
 import { BeamOutputData } from "../models/BeamOutputData";
 import DesignBeamViewerForm from "./DesignBeamViewerForm";
-import ListBeam from "./ListBeam";
+import ListBeam, { BeamNode } from "./ListBeam";
 
 export default function Home() {
+
+    const [beamList, setBeamList] = useState<BeamNode[]>([]);
+    const [selectedBeam, setSelectedBeam] = useState<BeamNode>();
 
     //CUTTING BAR
     const [outputData, setOutputData] = useState<OutputData>();
@@ -156,6 +159,11 @@ export default function Home() {
         setLindex(value);
     }
 
+    const handleBeamDataUpdate = (updatedBeamData: BeamNode[]) => {
+        setBeamList(updatedBeamData);
+    };
+
+
     return (
         <div className="container">
             <header>
@@ -179,11 +187,11 @@ export default function Home() {
                 </ul>
             </nav>
             <main>
-                <div className="left-column" style={{border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft}></ListBeam>
+                <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
-                    {activeTool === 'beam' && <DesignBeamInputForm onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange}></DesignBeamInputForm>}
+                    {activeTool === 'beam' && <DesignBeamInputForm id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange}></DesignBeamInputForm>}
                     {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
