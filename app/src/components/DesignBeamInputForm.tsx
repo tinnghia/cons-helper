@@ -28,6 +28,7 @@ export interface RebarProps {
     position: string;
     type: string;
     columnIndex: string;
+    dia: string;
 }
 
 export interface BeamDataProps {
@@ -218,7 +219,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
             return;
         setRebarList([...rebarList, {
             length: rebarLength, columnIndex: expandedColumnIndex,
-            number: rebarNumber, position: rebarPosition, type: rebarType
+            number: rebarNumber, position: rebarPosition, type: rebarType, dia: rebarDia
         }]);
 
     };

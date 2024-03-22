@@ -292,12 +292,21 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         postData['bottomSafeZoneFromColumn'] = parseFloat(node.beam.bottomSafeZoneFromColumn ?? '0');
         postData['firstColumnIndex'] = node.beam.firstColumnIndex === 'first+1' ? 1 : 0;
         postData['lastColumnIndex'] = node.beam.lastColumnIndex === 'last-1' ? node.beam.spans.length - 2 : node.beam.spans.length - 1;
-        let lspans = [];
-        for (var i = 0; i < node.beam.spans.length; i++) {
-            lspans.push(parseInt(node.beam.spans[i].length));
-        }
+
+        const lspans = node.beam.rebars.map(item => ({
+            ...item,
+            length: parseInt(item.length)
+        }));
+        const newRebars = node.beam.rebars.map(item => ({
+            ...item,
+            length: parseInt(item.length),
+            columnIndex: parseInt(item.columnIndex),
+            dia: parseInt(item.dia),
+            number: parseInt(item.number),
+
+        }));
         postData['spans'] = lspans;
-        postData['rebars'] = node.beam.rebars;
+        postData['rebars'] = newRebars;
         return postData;
     }
     const handleAddChild = () => {
