@@ -10,6 +10,7 @@ import DesignBeamResultForm from "./DesignBeamResultForm";
 import DesignBeamViewerForm from "./DesignBeamViewerForm";
 import "./Home.css";
 import ListBeam, { BeamNode } from "./ListBeam";
+import { error } from "console";
 
 export default function Home() {
 
@@ -69,6 +70,11 @@ export default function Home() {
         console.log('setOutputDesignData', outputData);
         setIndexes(outputData?.indexes);
         SetIsShowDesignResult(true);
+        setShowLoading(false);
+    }
+    const handleBeamError = (error:any)=>{
+        console.log(error);
+        setShowLoading(false);
     }
 
     const onHandleCuttingResult = (outputData: OutputData) => {
@@ -213,7 +219,7 @@ export default function Home() {
             </nav>
             <main>
                 <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun}></ListBeam>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
                     {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}

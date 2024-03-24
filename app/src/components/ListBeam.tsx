@@ -234,8 +234,11 @@ interface ListBeamProps {
     onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void,
     onSelectedChange: (node: BeamNode | undefined) => void,
     onRun: () => void;
+    onResult: (resultData: any) => void;
+    onFail: (error: any) => void
+
 }
-const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun }, ref) => {
+const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onResult, onFail }, ref) => {
     const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
     const treeRef = useRef<any>(null);
 
@@ -260,12 +263,13 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
             })
             .then((data) => {
                 console.log('result', data);
-                //onResult(data);
+                onResult(data);
                 //setIsProcessing(false);
                 console.log('Data posted successfully');
             })
             .catch(error => {
                 //setIsProcessing(false);
+                onFail(error);
                 console.error('There was a problem with your fetch operation:', error);
             });
     }
