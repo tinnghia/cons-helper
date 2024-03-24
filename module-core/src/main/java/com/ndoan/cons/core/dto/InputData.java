@@ -4,7 +4,7 @@ import java.util.List;
 
 public class InputData {
     private String unit;
-    private double bar_length;
+    private int bar_length;
     private List<SubsData> subs;
 
     // Getters and setters
@@ -20,7 +20,7 @@ public class InputData {
         return bar_length;
     }
 
-    public void setBar_length(double bar_length) {
+    public void setBar_length(int bar_length) {
         this.bar_length = bar_length;
     }
 

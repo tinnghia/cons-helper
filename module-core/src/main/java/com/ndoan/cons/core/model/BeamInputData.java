@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class BeamInputData {
+    int id;
     int standardBarLength;
     int mainBarDiameter;
     int rifBarDiameter;
@@ -16,6 +17,8 @@ public class BeamInputData {
     int firstColumnIndex;
     int lastColumnIndex;
     int[] spans;
+    Rebar[] rebars;
+
     /** generated values during calculation **/
     int eachAnchorLength;
     int totalLengh;

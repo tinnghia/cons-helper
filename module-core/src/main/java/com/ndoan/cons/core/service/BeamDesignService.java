@@ -2,6 +2,7 @@ package com.ndoan.cons.core.service;
 
 import com.ndoan.cons.core.algo.DesignBeam;
 import com.ndoan.cons.core.model.BeamInputData;
+import com.ndoan.cons.core.model.BeamListOutputData;
 import com.ndoan.cons.core.model.BeamOutputData;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,11 @@ public class BeamDesignService implements InitializingBean {
         designBeam = new DesignBeam();
     }
 
-    public BeamOutputData design(BeamInputData inputData) {
-        return designBeam.design(inputData);
+    public BeamOutputData designSingle(BeamInputData inputData) {
+        return designBeam.designSingle(inputData);
+    }
+    public BeamListOutputData design(BeamInputData[] inputDatas) {
+        return designBeam.design(inputDatas);
     }
 
 

@@ -18,6 +18,7 @@ public class SolutionSpliceBar {
     int beginAnchor;
     int endAnchor;
 
+    int parentIndex;
     /**
      * refer to cut bar
      */
@@ -29,6 +30,7 @@ public class SolutionSpliceBar {
         ssb.endValue = endValue;
         ssb.beginAnchor = beginAnchor;
         ssb.endAnchor = endAnchor;
+        ssb.parentIndex = parentIndex;
         if (referredBar == null) {
             ssb.referredBar = referredBar.clone();
         }

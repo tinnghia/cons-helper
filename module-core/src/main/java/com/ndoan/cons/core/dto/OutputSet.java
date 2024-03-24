@@ -5,7 +5,7 @@ import java.util.List;
 public class OutputSet {
     private int total;
     private List<OutputSplit> split;
-    private double remain_per_each;
+    private int remain_per_each;
     private String displaySplit;
 
     // Getters and setters
@@ -33,11 +33,11 @@ public class OutputSet {
         this.split = split;
     }
 
-    public double getRemain_per_each() {
+    public int getRemain_per_each() {
         return remain_per_each;
     }
 
-    public void setRemain_per_each(double remain_per_each) {
+    public void setRemain_per_each(int remain_per_each) {
         this.remain_per_each = remain_per_each;
     }
 }

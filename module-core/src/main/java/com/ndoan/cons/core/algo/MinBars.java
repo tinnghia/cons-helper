@@ -13,22 +13,25 @@ import java.util.stream.Collectors;
 
 public class MinBars {
 
+    private final static int TOTAL_SOLUTION = 1;
+    private final static int MAX_TOTAL_BARS = 3000;
+
     public static OutputData optimizeBars(InputData inputData) {
         int[] lengths = new int[inputData.getSubs().size()];
         int[] totals = new int[inputData.getSubs().size()];
         double[] doubles = new double[lengths.length + 1];
         doubles[0] = inputData.getBar_length();
-        for(int i = 0;i<lengths.length;i++) {
-            doubles[i+1] = inputData.getSubs().get(i).getLength();
+        for (int i = 0; i < lengths.length; i++) {
+            doubles[i + 1] = inputData.getSubs().get(i).getLength();
         }
         int maxTen = getTen(doubles);
-        maxTen =(int) Math.pow(10, maxTen);
-        for(int i = 0;i<lengths.length;i++) {
-            lengths[i] =(int) (inputData.getSubs().get(i).getLength() * maxTen);
+        maxTen = (int) Math.pow(10, maxTen);
+        for (int i = 0; i < lengths.length; i++) {
+            lengths[i] = (int) (inputData.getSubs().get(i).getLength() * maxTen);
             totals[i] = inputData.getSubs().get(i).getTotal();
         }
 
-        int barLength = (int)(inputData.getBar_length() * maxTen);
+        int barLength = (int) (inputData.getBar_length() * maxTen);
         CombinationResult combinationResult = minBars(barLength, lengths, totals);
 
         List<CombinationSetIndices> resultList = combinationResult.getResultIndices();
@@ -42,7 +45,7 @@ public class MinBars {
         outputData.setMethods(new ArrayList<>());
 
 
-        for(CombinationSetIndices combinationSetIndices : resultList) {
+        for (CombinationSetIndices combinationSetIndices : resultList) {
             SplitMethod splitMethod = new SplitMethod();
             List<OutputSet> set = new ArrayList<>();
             for (int l = 0; l < combinationSetIndices.getIndices().length; l++) {
@@ -50,9 +53,10 @@ public class MinBars {
                     OutputSet outputSet = new OutputSet();
                     outputSet.setTotal(combinationSetIndices.getIndices()[l]);
                     outputSet.setSplit(new ArrayList<>());
-                    double remain =  ((barLength - combinationSets.get(l).getSum()) * 1.0)/ maxTen;
+                    //double remain =  ((barLength - combinationSets.get(l).getSum()) * 1.0)/ maxTen;
+                    int remain = barLength - combinationSets.get(l).getSum();
                     outputSet.setRemain_per_each(remain);
-                    for(int k = 0 ;k<lengths.length;k++) {
+                    for (int k = 0; k < lengths.length; k++) {
                         OutputSplit split = new OutputSplit();
                         split.setLength(inputData.getSubs().get(k).getLength());
                         split.setTotal(combinationSets.get(l).getTotals()[k]);
@@ -73,28 +77,29 @@ public class MinBars {
     }
 
     static String parseDisplayDividedBars(InputData inputData) {
-        return inputData.getSubs().stream().map(sb-> String.valueOf(sb.getLength())).collect(Collectors.joining(", "));
+        return inputData.getSubs().stream().map(sb -> String.valueOf(sb.getLength())).collect(Collectors.joining(", "));
     }
 
     static String parseDisplayRemain(SplitMethod splitMethod) {
-        return splitMethod.getSet().stream().filter(sps->sps.getRemain_per_each()>0).map(sps-> {
-            return sps.getTotal() + " * "  + sps.getRemain_per_each();
+        return splitMethod.getSet().stream().filter(sps -> sps.getRemain_per_each() > 0).map(sps -> {
+            return sps.getTotal() + " * " + sps.getRemain_per_each();
         }).collect(Collectors.joining(", "));
     }
 
     static String parseDisplaySplit(OutputSet outputSet) {
-        return outputSet.getSplit().stream().filter(split->split.getTotal()>0).map(split->{
+        return outputSet.getSplit().stream().filter(split -> split.getTotal() > 0).map(split -> {
             return split.getTotal() + " * " + split.getLength();
         }).collect(Collectors.joining(", "));
     }
-    static int getTen(double...doubleList) {
+
+    static int getTen(double... doubleList) {
         int maxNonZeroDigit = 0;
 
         // Iterate through each double in the list
         for (double number : doubleList) {
             // Extract the fractional part of the double
             double fractionalPart = number - Math.floor(number);
-            fractionalPart= Math.round(fractionalPart * 10000.0) / 10000.0;
+            fractionalPart = Math.round(fractionalPart * 10000.0) / 10000.0;
             // Skip if the fractional part is zero
             if (fractionalPart == 0) {
                 continue;
@@ -105,7 +110,7 @@ public class MinBars {
             while (fractionalPart > 0) {
                 fractionalPart *= 10;
                 // Check if the current digit is non-zero
-                fractionalPart = fractionalPart -  (int)(fractionalPart%10);
+                fractionalPart = fractionalPart - (int) (fractionalPart % 10);
                 fractionalPart = Math.round(fractionalPart * 10000.0) / 10000.0;
                 nonZeroDigits++;
             }
@@ -116,14 +121,16 @@ public class MinBars {
         return maxNonZeroDigit;
 
     }
+
     public static CombinationResult minBars(int M, int[] lengths, int[] totals) {
-        CombinationResult combinationResult =  new CombinationResult();
+        CombinationResult combinationResult = new CombinationResult();
         List<CombinationSet> list = new ArrayList<>();
         CombinationSet set = new CombinationSet();
         set.setLengths(lengths);
         set.setTotals(new int[lengths.length]);
         findTheSet(M, lengths, lengths.length, 0, list, set); //==> 11 sets
 
+        list.sort((cs1, cs2) -> isArr1GreaterThanArr2(cs1.getTotals(), cs2.getTotals()));
         int[] result = new int[list.size()];
         List<CombinationSetIndices> indices = new ArrayList<>();
         minBars01(M, totals, list, indices, result, 0);
@@ -149,10 +156,14 @@ public class MinBars {
             }
         }
 
-        finalList.sort((t1,t2)->t1.getNumberCuts()- t2.getNumberCuts());
+        finalList.sort((t1, t2) -> t1.getNumberCuts() - t2.getNumberCuts());
         combinationResult.setCombinationSets(list);
         combinationResult.setResultIndices(finalList);
         return combinationResult;
+    }
+
+    public static int isArr1GreaterThanArr2(int[] arr1, int[] arr2) {
+        return Arrays.stream(arr2).sum() - Arrays.stream(arr1).sum();
     }
 
     public static void findTheSet(int M, int[] lengths, int numbers, int i, List<CombinationSet> list, CombinationSet set) {
@@ -183,6 +194,9 @@ public class MinBars {
 
     public static void minBars01(int M, int[] totals, List<CombinationSet> list, List<CombinationSetIndices> indices, int[] result, int index) {
 
+        if (indices.size() == TOTAL_SOLUTION) {
+            return;
+        }
         if (index >= list.size()) {
             if (meet(totals, list, result)) {
                 System.out.println("Result ==> ");
@@ -192,13 +206,18 @@ public class MinBars {
                     }
                 }
                 CombinationSetIndices idx = new CombinationSetIndices();
-                idx.setIndices(new int[result.length]);
-                for (int y = 0; y < result.length; y++) {
-                    idx.getIndices()[y] = result[y];
-                    idx.setTotal(idx.getTotal() + idx.getIndices()[y]);
-                }
+                int currentTotal = indices.size() > 0 ? indices.get(indices.size() - 1).getTotal() : MAX_TOTAL_BARS;
+                int total = Arrays.stream(result).sum();
+                if (currentTotal > total) {
+                    idx.setIndices(new int[result.length]);
+                    for (int y = 0; y < result.length; y++) {
+                        idx.getIndices()[y] = result[y];
+                        idx.setTotal(idx.getTotal() + idx.getIndices()[y]);
+                    }
 
-                indices.add(idx);
+                    indices.add(idx);
+                    System.out.println(idx.getTotal() + " - > indexes --- size = " + indices.size());
+                }
             }
             return;
         }
@@ -241,8 +260,9 @@ public class MinBars {
         return true;
 
     }
+
     public static void main(String[] args) {
-        int M = 117;
+        /*int M = 117;
         List<CombinationSet> list = new ArrayList<>();
         int[] lengths = new int[]{117, 33, 36};
         int[] totals = new int[]{5,6,3};
@@ -256,6 +276,46 @@ public class MinBars {
         minBars(M, lengths, totals);
 
         System.out.println("GT" + getTen(11.7, 3.3, 3.6));
+         */
+
+
+        InputData inputData = new InputData();
+        inputData.setBar_length(117);
+        inputData.setUnit("m");
+        List<SubsData> subsDataList = new ArrayList<>();
+        SubsData sub1 = new SubsData();
+        sub1.setLength(117);
+        sub1.setTotal(5);
+        subsDataList.add(sub1);
+        SubsData sub2 = new SubsData();
+        sub2.setLength(33);
+        sub2.setTotal(7);
+        subsDataList.add(sub2);
+        SubsData sub3 = new SubsData();
+        sub3.setLength(36);
+        sub3.setTotal(9);
+        subsDataList.add(sub3);
+
+        inputData.setSubs(subsDataList);
+
+        OutputData outputData = optimizeBars(inputData);
+        System.out.println(outputData);
+        List<SplitMethod> methods = outputData.getMethods();
+
+        for (int i = 0; i < methods.size(); i++) {
+            System.out.println("method : " + i);
+            List<OutputSet> list = methods.get(i).getSet();
+            for (OutputSet set : list) {
+                System.out.print(" total of  set : " + set.getTotal() + " ");
+                List<OutputSplit> splits = set.getSplit();
+                for (OutputSplit split : splits) {
+                    System.out.print(split.getLength() + "x" + split.getTotal() + " ");
+                }
+
+                System.out.println();
+            }
+        }
+
 
     }
 

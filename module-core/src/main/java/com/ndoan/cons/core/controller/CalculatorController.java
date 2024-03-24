@@ -3,7 +3,7 @@ package com.ndoan.cons.core.controller;
 import com.ndoan.cons.core.dto.InputData;
 import com.ndoan.cons.core.dto.OutputData;
 import com.ndoan.cons.core.model.BeamInputData;
-import com.ndoan.cons.core.model.BeamOutputData;
+import com.ndoan.cons.core.model.BeamListOutputData;
 import com.ndoan.cons.core.service.BeamDesignService;
 import com.ndoan.cons.core.service.CalculatorService;
 import jakarta.servlet.ServletContext;
@@ -63,7 +63,7 @@ public class CalculatorController {
     }
 
     @PostMapping("/calculators/design")
-    public ResponseEntity<BeamOutputData> optimizeCut(@RequestBody BeamInputData inputData) {
+    public ResponseEntity<BeamListOutputData> optimizeCut(@RequestBody BeamInputData[] inputData) {
         return ResponseEntity.ok(beamDesignService.design(inputData));
     }
 }

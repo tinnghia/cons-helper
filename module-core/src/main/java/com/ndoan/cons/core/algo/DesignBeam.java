@@ -1,11 +1,12 @@
 package com.ndoan.cons.core.algo;
 
-import com.ndoan.cons.core.model.BeamInputData;
-import com.ndoan.cons.core.model.BeamOutputData;
-import com.ndoan.cons.core.model.SolutionMainBar;
+import com.ndoan.cons.core.dto.InputData;
+import com.ndoan.cons.core.dto.OutputData;
+import com.ndoan.cons.core.dto.SplitMethod;
+import com.ndoan.cons.core.dto.SubsData;
+import com.ndoan.cons.core.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DesignBeam {
 
@@ -27,7 +28,91 @@ public class DesignBeam {
         beamInputProcessor = new BeamInputProcessorImpl();
     }
 
-    public BeamOutputData design(BeamInputData inputData) {
+    public BeamListOutputData design(BeamInputData[] inputDataList) {
+        BeamOutputData[] outputDataList = new BeamOutputData[inputDataList.length];
+
+        for (int i = 0; i < inputDataList.length; i++) {
+            outputDataList[i] = designSingle(inputDataList[i]);
+        }
+
+        InputData inputData = buildInputDataForCutting(inputDataList[0], outputDataList);
+        OutputData splitOutputData = MinBars.optimizeBars(inputData);
+        SplitMethod splitMethod = chooseMethod(splitOutputData);
+
+        SpanBarQueue spanBarQueue = new SpanBarQueue();
+        spanBarQueue.add(splitMethod);
+
+        for (int i = 0; i < inputDataList.length; i++) {
+            updateBarInBeam(spanBarQueue, outputDataList[i]);
+        }
+
+        BeamListOutputData beamListOutputData = new BeamListOutputData();
+        beamListOutputData.setOutputDataList(Arrays.asList(outputDataList));
+        beamListOutputData.setWorkId(UUID.randomUUID().toString());
+        beamListOutputData.setBarQueue(spanBarQueue);
+
+        return beamListOutputData;
+    }
+
+    public void updateBarInBeam(SpanBarQueue spanBarQueue, BeamOutputData beamOutputData) {
+        updateBars(spanBarQueue, beamOutputData.getTopBars());
+        updateBars(spanBarQueue, beamOutputData.getBottomBars());
+    }
+
+    private void updateBars(SpanBarQueue spanBarQueue, List<SolutionMainBar> bars) {
+        for (SolutionMainBar bar : bars) {
+            for (SolutionSpliceBar spliceBar : bar.getBars()) {
+                int length = spliceBar.getBeginAnchor() + spliceBar.getEndAnchor() + spliceBar.getEndValue() - spliceBar.getBeginValue();
+                int parentIndex = spanBarQueue.findAndRemove(length);
+                spliceBar.setParentIndex(parentIndex);
+
+            }
+        }
+    }
+
+    private InputData buildInputDataForCutting(BeamInputData beamData, BeamOutputData[] outputDataList) {
+        InputData inputData = new InputData();
+        inputData.setBar_length(beamData.getStandardBarLength());
+        inputData.setUnit("m");
+        List<SubsData> subsDataList = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < outputDataList.length; i++) {
+            map = storeBars(map, outputDataList[i].getTopBars());
+            map = storeBars(map, outputDataList[i].getBottomBars());
+        }
+        for(int length : map.keySet()) {
+            SubsData subsData = new SubsData();
+            subsData.setLength(length);
+            subsData.setTotal(map.get(length));
+
+            subsDataList.add(subsData);
+        }
+
+        inputData.setSubs(subsDataList);
+
+        return inputData;
+    }
+
+    private Map<Integer, Integer> storeBars(Map<Integer, Integer> map, List<SolutionMainBar> bars) {
+        for (SolutionMainBar bar : bars) {
+            for (SolutionSpliceBar spliceBar : bar.getBars()) {
+                int length = spliceBar.getBeginAnchor() + spliceBar.getEndAnchor() + spliceBar.getEndValue() - spliceBar.getBeginValue();
+                if (map.containsKey(length)) {
+                    map.put(length, map.get(length) + 1);
+                } else {
+                    map.put(length, 1);
+                }
+
+            }
+        }
+        return map;
+    }
+
+    private SplitMethod chooseMethod(OutputData outputData) {
+        return outputData.getMethods().get(0);
+    }
+
+    public BeamOutputData designSingle(BeamInputData inputData) {
         BeamOutputData outputData = new BeamOutputData();
         inputData = beamInputProcessor.processInput(inputData);
 
@@ -87,8 +172,13 @@ public class DesignBeam {
         inputData.setMainBarDiameter(22); //d22 = 22mm
         inputData.setTopSafeZoneAwayFromColumn(0.25);
         inputData.setBottomSafeZoneFromColumn(0.25);
+        inputData.setTopMainBars(3);
+        inputData.setBottomMainBars(3);
+        //BeamOutputData outputData = designBeam.designSingle(inputData);
 
-        designBeam.design(inputData);
+        BeamListOutputData outputData = designBeam.design(new BeamInputData[]{inputData});
+
+        System.out.println(outputData.getOutputDataList());
 
 
     }

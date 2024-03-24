@@ -1,15 +1,15 @@
 package com.ndoan.cons.core.dto;
 
 public class OutputSplit {
-    private double length;
+    private int length;
     private int total;
 
     // Getters and setters
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
-    public void setLength(double length) {
+    public void setLength(int length) {
         this.length = length;
     }
 
