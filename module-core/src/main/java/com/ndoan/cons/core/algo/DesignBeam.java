@@ -80,10 +80,19 @@ public class DesignBeam {
             map = storeBars(map, outputDataList[i].getTopBars());
             map = storeBars(map, outputDataList[i].getBottomBars());
         }
+
         for(int length : map.keySet()) {
             SubsData subsData = new SubsData();
             subsData.setLength(length);
             subsData.setTotal(map.get(length));
+
+            subsDataList.add(subsData);
+        }
+
+        for(int i =0;i< beamData.getRebars().length; i++) {
+            SubsData subsData = new SubsData();
+            subsData.setLength(beamData.getRebars()[i].getLength());
+            subsData.setTotal(beamData.getRebars()[i].getNumber());
 
             subsDataList.add(subsData);
         }
@@ -166,7 +175,7 @@ public class DesignBeam {
         inputData.setAnchorLength(15);
         inputData.setSpans(new int[]{5000, 3000, 12000, 8000, 2000});
         inputData.setFirstColumnIndex(0);
-        inputData.setLastColumnIndex(inputData.getSpans().length - 2);  // last -1
+        inputData.setLastColumnIndex(4);  // last -1
         inputData.setLabLength(30);
         inputData.setAnchorLength(15);
         inputData.setMainBarDiameter(22); //d22 = 22mm
@@ -174,6 +183,9 @@ public class DesignBeam {
         inputData.setBottomSafeZoneFromColumn(0.25);
         inputData.setTopMainBars(3);
         inputData.setBottomMainBars(3);
+
+
+        //BeamInputData(id=1, standardBarLength=11700, mainBarDiameter=22, rifBarDiameter=18, labLength=30, anchorLength=15, topMainBars=3, bottomMainBars=3, topSafeZoneAwayFromColumn=0.25, bottomSafeZoneFromColumn=0.25, firstColumnIndex=0, lastColumnIndex=4, spans=[5000, 3000, 12000, 8000, 2000], rebars=[], eachAnchorLength=0, totalLengh=0, minStandardBars=0, overLapLength=0, needBeginAnchor=false, needEndAnchor=false, stepsBetweenOverlapSolutions=10)
         //BeamOutputData outputData = designBeam.designSingle(inputData);
 
         BeamListOutputData outputData = designBeam.design(new BeamInputData[]{inputData});

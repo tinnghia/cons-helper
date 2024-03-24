@@ -3,11 +3,15 @@ package com.ndoan.cons.core.model;
 import com.ndoan.cons.core.dto.OutputSet;
 import com.ndoan.cons.core.dto.OutputSplit;
 import com.ndoan.cons.core.dto.SplitMethod;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
 public class SpanBarQueue {
     int currentParentIndex;
     Map<Integer, SpanBar> usingSpanBars;

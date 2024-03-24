@@ -29,6 +29,9 @@ public class RealBarArrangerWithIncreasingDelta implements RealBarArranger {
             SpliceRangeBar bar = bars.get(i);
             Range common = i == bars.size() - 1 ? bar.getEnd() : DesignBeamHelpers.findCommonRange(bar.getEnd(), bars.get(i + 1).getBegin());
             //get the first point
+            if (common == null) {
+                return null;
+            }
             int neededLength = bar.getBegin().getAnchor() + common.getBegin() + delta - currentX;
 
             if (neededLength > inputData.getStandardBarLength()) {
