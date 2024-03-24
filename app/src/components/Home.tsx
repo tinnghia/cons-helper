@@ -11,6 +11,7 @@ import DesignBeamViewerForm from "./DesignBeamViewerForm";
 import "./Home.css";
 import ListBeam, { BeamNode } from "./ListBeam";
 import { error } from "console";
+import BeamTableForm from "./BeamTableForm";
 
 export default function Home() {
 
@@ -72,7 +73,7 @@ export default function Home() {
         SetIsShowDesignResult(true);
         setShowLoading(false);
     }
-    const handleBeamError = (error:any)=>{
+    const handleBeamError = (error: any) => {
         console.log(error);
         setShowLoading(false);
     }
@@ -256,6 +257,7 @@ export default function Home() {
                             )}
                             {selectedBeam && !isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
                         </div>
+                        <BeamTableForm></BeamTableForm>
                     </div>
                     <div id="history" className={activeTab === 'history' ? "tabcontent active" : "tabcontent"}>
                     </div>
