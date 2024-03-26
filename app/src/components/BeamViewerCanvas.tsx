@@ -85,7 +85,6 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
   useEffect(() => {
     if (stageContainerRef.current && stageContainerRef.current.parentElement) {
       const parentHeight = stageContainerRef.current.parentElement.clientHeight + 100;
-      console.log('parentHeight', parentHeight)
       setMinHeight(Math.max(parentHeight, 200)); // Adjust 200 as needed
     }
   }, []);
