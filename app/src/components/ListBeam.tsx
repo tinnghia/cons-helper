@@ -303,10 +303,9 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         postData['firstColumnIndex'] = node.beam.firstColumnIndex === 'first+1' ? 1 : 0;
         postData['lastColumnIndex'] = node.beam.lastColumnIndex === 'last-1' ? node.beam.spans.length - 2 : node.beam.spans.length - 1;
 
-        const lspans = node.beam.rebars.map(item => ({
-            ...item,
-            length: parseInt(item.length)
-        }));
+        const lspans = node.beam.spans.map(item =>
+            parseInt(item.length)
+        );
         const newRebars = node.beam.rebars.map(item => ({
             ...item,
             length: parseInt(item.length),
