@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { BeamOutputData } from "../models/BeamOutputData";
 import { OutputData } from "../models/OutputData";
+import BeamTableForm from "./BeamTableForm";
+import ConfirmationModal from "./ConfirmationModal";
 import CuttingInputForm from "./CuttingInputForm";
 import CuttingResultForm from "./CuttingResultForm";
 import DesignBeamInputForm, { ADD_SPAN_ACTION, BeamDataProps, REMOVE_SPAN_ACTION } from "./DesignBeamInputForm";
@@ -10,8 +12,6 @@ import DesignBeamResultForm from "./DesignBeamResultForm";
 import DesignBeamViewerForm from "./DesignBeamViewerForm";
 import "./Home.css";
 import ListBeam, { BeamNode } from "./ListBeam";
-import { error } from "console";
-import BeamTableForm from "./BeamTableForm";
 
 export default function Home() {
 
@@ -27,6 +27,7 @@ export default function Home() {
     const [isShowLeft, SetIsShowLeft] = useState(true);
     const [treeWidth, setTreeWidth] = useState('10%');
     const [inputWidth, setInputWidth] = useState('40%');
+    const [inputHeight, setInputHeight] = useState('40%');
     const [resultWidth, setResultWidth] = useState('50%');
     const [splitterCursor, setSplitterCursor] = useState('col-resize');
     const [svgLeftDisplay, setSvgLeftDisplay] = useState('block');
@@ -35,7 +36,7 @@ export default function Home() {
 
     const [isShowUserContext, setIsShowUserContext] = useState(false);
     const [activeTool, setActiveTool] = useState('beam');
-    const [activeTab, setActiveTab] = useState('result');
+    const [activeTab, setActiveTab] = useState('');
 
     const dropdownRef = useRef<any>(null);
     const userRef = useRef<any>(null);
@@ -54,6 +55,9 @@ export default function Home() {
     };
     const inputSectionRef = useRef<any>(null);
     const resultSectionRef = useRef<any>(null);
+    const resultBeamTableRef = useRef<any>(null);
+    const resultTextRef = useRef<any>(null);
+    const resultRef = useRef<any>(null);
 
     const designBeamViewRef = useRef<any>(null);
     const listBeamRef = useRef<any>(null);
@@ -61,6 +65,10 @@ export default function Home() {
     const [showDialog, setShowDialog] = useState(false);
     const [saveStatus, setSaveStatus] = useState('');
     const [showLoading, setShowLoading] = useState(false);
+
+
+    const beamInputRef = useRef<any>(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const handleCuttingBack = () => {
 
@@ -72,6 +80,7 @@ export default function Home() {
         setIndexes(outputData?.indexes);
         SetIsShowDesignResult(true);
         setShowLoading(false);
+        setActiveTab('result');
     }
     const handleBeamError = (error: any) => {
         console.log(error);
@@ -86,6 +95,41 @@ export default function Home() {
         setIsResizing(true);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    const handleMouseDownSplitResult = (event: any) => {
+        setIsResizing(true);
+        document.addEventListener('mousemove', handleMouseMoveSplitResult);
+        document.addEventListener('mouseup', handleMouseUpSplitResult);
+    };
+
+    const handleMouseMoveSplitResult = (event: any) => {
+        if (!resizingRef.current) return;
+        const resultRect = resultRef.current.getBoundingClientRect();
+        const mouseY = event.clientY - resultRect.top;
+        const parentHeight = resultRef.current.clientHeight;
+        let newPosition = (mouseY / parentHeight) * 100;
+
+        if (newPosition < 5) {
+            newPosition = 0;
+            resultTextRef.current.style.padding = '5px';
+        } else {
+            resultTextRef.current.style.padding = '0px';
+        }
+        if (newPosition > 80) {
+            newPosition = 95;
+            resultBeamTableRef.current.style.padding = '5px';
+        } else {
+            resultBeamTableRef.current.style.padding = '0px';
+        }
+        resultBeamTableRef.current.style.height = (100 - newPosition) + '%';
+        resultTextRef.current.style.height = newPosition + '%';
+    };
+
+    const handleMouseUpSplitResult = () => {
+        setIsResizing(false);
+        document.removeEventListener('mousemove', handleMouseMoveSplitResult);
+        document.removeEventListener('mouseup', handleMouseUpSplitResult);
     };
 
     const handleMouseMove = (event: any) => {
@@ -177,6 +221,7 @@ export default function Home() {
 
     const handleBeamSelectedChange = (node: BeamNode | undefined) => {
         setSelectedBeam(node);
+        setActiveTab('history');
     }
 
     const handleSaveBeam = (id: number, beam: BeamDataProps) => {
@@ -196,6 +241,22 @@ export default function Home() {
         setShowLoading(true);
     }
 
+    const handleConfirmation = (confirmed: boolean) => {
+        setShowConfirmation(false);
+        if (confirmed) {
+            beamInputRef.current.handleSave();
+        } else {
+
+        }
+    };
+
+    const hanldePrerRun = () => {
+        if (beamInputRef.current.checkModified()) {
+            setShowConfirmation(true);
+        } else {
+            listBeamRef.current.handleRun();
+        }
+    }
     return (
         <div className="container">
             <header>
@@ -220,10 +281,10 @@ export default function Home() {
             </nav>
             <main>
                 <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft} initBeamData={beamList} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onPreRun={hanldePrerRun} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
-                    {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}
+                    {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm ref={beamInputRef} id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}
                     {activeTool === 'cutting' && <CuttingInputForm onResult={onHandleCuttingResult} show={isShowLeft}></CuttingInputForm>}
                 </div>
                 <div className="splitter" id="splitter" onPointerDown={handleMouseDown}>
@@ -243,25 +304,34 @@ export default function Home() {
 
                 </div>
 
-                <div className="result-section" ref={resultSectionRef} style={{ width: resultWidth }}>
-                    <div className="tab">
-                        <button className={activeTab === 'result' ? "tablinks active" : "tablinks"} onClick={() => openTab('result')}>Result</button>
-                        <button className={activeTab === 'history' ? "tablinks active" : "tablinks"} onClick={() => openTab('history')}>History</button>
-                    </div>
-                    <div id="result" className={activeTab === 'result' ? "tabcontent active" : "tabcontent"}>
-                        <div id="result-text">
-                            {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
-                            )}
-
-                            {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
-                            )}
-                            {selectedBeam && !isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
+                {activeTab !== '' && (
+                    <div className="result-section" ref={resultSectionRef} style={{ width: resultWidth }}>
+                        <div className="tab">
+                            <button className={activeTab === 'history' ? "tablinks active" : "tablinks"} onClick={() => openTab('history')}>Design</button>
+                            <button className={activeTab === 'result' ? "tablinks active" : "tablinks"} onClick={() => openTab('result')}>Result</button>
                         </div>
-                        <BeamTableForm></BeamTableForm>
-                    </div>
-                    <div id="history" className={activeTab === 'history' ? "tabcontent active" : "tabcontent"}>
-                    </div>
-                </div>
+                        {activeTab === 'result' && (
+                            <div id="result" ref={resultRef} className={activeTab === 'result' ? "tabcontent active" : "tabcontent"}>
+                                <div id="result-text" className="resultTextCls" ref={resultTextRef}>
+                                    {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
+                                    )}
+
+                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
+                                    )}
+                                </div>
+                                {isShowDesignResult &&
+                                    (<>
+                                        <div className="splitter_result" id="splitter" onPointerDown={handleMouseDownSplitResult}>
+                                        </div>
+                                        <div className="beamTableCls" ref={resultBeamTableRef} style={{ height: inputHeight, padding: inputHeight === '0px' ? '0px' : '10px' }}>
+                                            <BeamTableForm></BeamTableForm>
+                                        </div></>)}
+                            </div>)}
+                        {activeTab === 'history' && (
+                            <div id="history" className={activeTab === 'history' ? "tabdesign active" : "tabdesign"}>
+                                {selectedBeam && !isShowCuttingResult && !isShowDesignResult && activeTool === 'beam' && <DesignBeamViewerForm indexes={indexes} ref={designBeamViewRef} findex={findex} lindex={lindex} />}
+                            </div>)}
+                    </div>)}
 
 
                 {showDialog && (
@@ -285,6 +355,14 @@ export default function Home() {
                             <span style={{ marginLeft: '0.5em', fontSize: '18px', color: '#007bff' }}>Processing...</span>
                         </div>
                     </div>
+                )}
+
+                {showConfirmation && (
+                    <ConfirmationModal
+                        message="Do you want to save changes?"
+                        onConfirm={() => handleConfirmation(true)}
+                        onCancel={() => handleConfirmation(false)}
+                    />
                 )}
             </main>
         </div>

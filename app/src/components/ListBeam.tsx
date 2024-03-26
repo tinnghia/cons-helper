@@ -234,13 +234,18 @@ interface ListBeamProps {
     onBeamDataUpdate: (updatedBeamData: BeamNode[]) => void,
     onSelectedChange: (node: BeamNode | undefined) => void,
     onRun: () => void;
+    onPreRun: () => void;
     onResult: (resultData: any) => void;
     onFail: (error: any) => void
 
 }
-const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onResult, onFail }, ref) => {
+const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onPreRun, onResult, onFail }, ref) => {
     const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
     const treeRef = useRef<any>(null);
+
+    const handlePreRun = () => {
+        onPreRun();
+    }
 
     const handleRun = async () => {
         const postData = beamData.map(beam => buildPostData(beam))
@@ -277,7 +282,8 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
     const handleUpdateBeam = (id: number, beam: BeamDataProps) => {
     }
     useImperativeHandle(ref, () => ({
-        handleUpdateBeam: handleUpdateBeam
+        handleUpdateBeam: handleUpdateBeam,
+        handleRun: handleRun
     }));
 
     const buildPostData = (node: BeamNode) => {
@@ -384,7 +390,7 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
             <div className="button-group">
 
                 <button className="add-child-btn" onClick={handleAddChild}>New Beam<FaPlus className="icon" /></button>
-                <button className="run-all-btn" onClick={handleRun}>Run<FaPlay className="icon" /></button>
+                <button className="run-all-btn" onClick={handlePreRun}>Run<FaPlay className="icon" /></button>
             </div>
             <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} onSelectedItemChange={onHandleSelectedChange} onDelete={handleDelete} />
         </div>

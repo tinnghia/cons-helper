@@ -213,3 +213,27 @@
   margin-top: 10px;
   /* Add margin between inputSubSectionCls and button */
 }
+
+
+.saveBtnContainer {
+  float: right;
+  background-color: transparent;
+}
+
+.saveBtnContainer>button {
+  float: right;
+  transition: scale 0.3s ease;
+  background-color: transparent !important;
+  color: #29a0ad;
+}
+
+.saveBtnContainer>button:hover {
+  transform: scale(1.3);
+  /* Scale up on hover */
+}
+
+.saveBtn:disabled {
+  color: #cccccc !important;
+  cursor: not-allowed;
+  transform: scale(1) !important;
+}

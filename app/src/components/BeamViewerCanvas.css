@@ -18,3 +18,17 @@
     transform: translate(-50%, -50%) scale(1.3);
     /* Scale up on hover */
 }
+
+.BeamViewer {
+    width: 100%;
+    /* Set the width of the stage container to match its parent */
+    height: 100%;
+}
+
+.controlBtnCls {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 15px;
+
+}

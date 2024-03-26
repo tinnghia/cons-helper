@@ -1,9 +1,9 @@
-import { useRef, useState, FunctionComponent, forwardRef, useImperativeHandle } from 'react';
+import Konva from 'konva';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
-import "./BeamViewerCanvas.css";
 import BeamAxis, { AXIS_HEIGHT, AXIS_MARGIN_LEFT, AXIS_MARGIN_TOP } from '../beam/BeamAxis';
 import MainBar, { LENGTH_SCALE } from '../beam/MainBar';
-import Konva from 'konva';
+import "./BeamViewerCanvas.css";
 
 interface DrawingCanvasProps {
   topBars?: any[];
@@ -47,7 +47,7 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
     setScale(scale / 1.1);
   };
 
-  const handleZoomTo = (action: string, span: any, sum:any) => {
+  const handleZoomTo = (action: string, span: any, sum: any) => {
     handleNewSpan(sum);
   };
 
@@ -57,12 +57,15 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
   }));
 
   const stageRef = useRef<any>();
+  const stageContainerRef = useRef<HTMLDivElement>(null);
+  const [minHeight, setMinHeight] = useState(0);
+
 
   const handleNewSpan = (sum: any) => {
     const x = parseInt(sum) * LENGTH_SCALE + AXIS_MARGIN_LEFT;
     const newStartX = x;
     const newTargetScale = 2; // Example scale (zoom level)
-    const newEndX = x * newTargetScale ;
+    const newEndX = x * newTargetScale;
 
     const newTargetX = newEndX; // Example X-coordinate
 
@@ -74,14 +77,22 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
       easing: Konva.Easings.StrongEaseInOut,
       //scaleX: newTargetScale,
       //scaleY: newTargetScale,
-      x: - newTargetX  + AXIS_MARGIN_LEFT *2
+      x: - newTargetX + AXIS_MARGIN_LEFT * 2
     });
     anim.play();
   }
 
+  useEffect(() => {
+    if (stageContainerRef.current && stageContainerRef.current.parentElement) {
+      const parentHeight = stageContainerRef.current.parentElement.clientHeight + 100;
+      console.log('parentHeight', parentHeight)
+      setMinHeight(Math.max(parentHeight, 200)); // Adjust 200 as needed
+    }
+  }, []);
+
   return (
-    <div>
-      <div>
+    <div style={{ height: '100%' }} ref={stageContainerRef}>
+      <div className='controlBtnCls'>
         <button onClick={handleScaleIn} className='zoom' title='Zoom In'>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-zoom-in" viewBox="0 0 16 16">
             <path fillRule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11M13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" />
@@ -97,7 +108,7 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
           </svg>
         </button>
       </div>
-      <Stage draggable width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale} ref={stageRef}>
+      <Stage draggable height={minHeight} width={window.innerWidth} scaleX={scale} scaleY={scale} ref={stageRef}>
         {/* Dot Vertical Lines */}
         <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} />
       </Stage>

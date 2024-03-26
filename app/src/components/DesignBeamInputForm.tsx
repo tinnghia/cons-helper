@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { FaSave } from 'react-icons/fa';
 import "./DesignBeamInputForm.css";
 import RebarList from './RebarList';
 
@@ -48,7 +49,7 @@ export interface BeamDataProps {
     rebars: RebarProps[]
 }
 
-const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange, onSave }) => {
+const DesignBeamInputForm = forwardRef<any, BeamInputFormProps>(({ id, beam, show, onResult, onSpanAction, onFirstIndexChange, onLastIndexChange, onSave }, ref) => {
     const [unit, setUnit] = useState<string>(beam?.unit ?? '');
     const [findex, setFindex] = useState<string>(beam?.firstColumnIndex ?? '');
     const [sindex, setSindex] = useState<string>(beam?.lastColumnIndex ?? '');
@@ -77,18 +78,27 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
     const [rebarDia, setRebarDia] = useState('1');
     const [rebarList, setRebarList] = useState<RebarProps[]>([]);
 
+    const [isModified, setIsModified] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
     const handleUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setUnit(e.target.value);
+        setIsModified(true);
+
     };
 
     const handleFindexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setFindex(e.target.value);
         onFirstIndexChange(e.target.value);
+        setIsModified(true);
+
     };
 
     const handleSindexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSindex(e.target.value);
         onLastIndexChange(e.target.value);
+        setIsModified(true);
+
     };
 
     const handleBarLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +106,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setStandardBarLength(newValue.toString());
+            setIsModified(true);
         }
     };
     const handleLabLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,6 +121,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setAnchorLength(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -118,6 +130,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setMainBarDiameter(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -126,6 +139,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setRifBarDiameter(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -134,6 +148,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setTopSafeZoneAwayFromColumn(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -142,6 +157,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setBottomSafeZoneFromColumn(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -150,6 +166,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setTopMainBars(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -158,6 +175,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setBottomMainBars(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -165,6 +183,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setNewLength(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -173,6 +192,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         updatedSpans.splice(index, 1);
         setSpans(updatedSpans);
         onSpanAction(ADD_SPAN_ACTION, index);
+        setIsModified(true);
     };
 
     const handleAddSpan = () => {
@@ -182,20 +202,24 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         setNewLength('');
         setExpandedColumnIndex((spans.length - 1).toString());
         onSpanAction(ADD_SPAN_ACTION, newLength);
+        setIsModified(true);
 
     };
 
     /*** REBAR events */
     const handleRebarTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setRebarType(e.target.value);
+        setIsModified(true);
     };
 
     const handleRebarPositionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setRebarPosition(e.target.value);
+        setIsModified(true);
     };
 
     const handleColumnIndexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setExpandedColumnIndex(e.target.value);
+        setIsModified(true);
     };
 
     const handleRebarNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,6 +227,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setRebarNumber(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -211,6 +236,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseInt(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setRebarDia(newValue.toString());
+            setIsModified(true);
         }
     };
 
@@ -221,6 +247,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
             length: rebarLength, columnIndex: expandedColumnIndex,
             number: rebarNumber, position: rebarPosition, type: rebarType, dia: rebarDia
         }]);
+        setIsModified(true);
 
     };
     const handleRebarLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,6 +255,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         const newValue = parseFloat(e.target.value);
         if (newValue >= 0 || isNaN(newValue)) {
             setRebarLength(newValue.toString());
+            setIsModified(true);
         }
     };
     const handleSave = (e: any) => {
@@ -250,6 +278,7 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
             onSave(id ? id : 0, beam);
 
         }
+        setIsModified(false);
 
     };
 
@@ -257,12 +286,25 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
         setActiveTab(tabName);
     };
 
+    const checkModified = () => {
+        return isModified;
+    };
+
+    useImperativeHandle(ref, () => ({
+        handleSave: handleSave,
+        checkModified: checkModified
+    }));
     return (
         <div className={show ? "bodyCls" : "bodyCls hide"}>
             <div className="tab">
                 <button className={activeTab === 'common' ? "tablinks active" : "tablinks"} onClick={() => openTab('common')}>COMMON PROPERTIES</button>
                 <button className={activeTab === 'span' ? "tablinks active" : "tablinks"} onClick={() => openTab('span')}>DESIGN SPAN</button>
                 <button className={activeTab === 'rebar' ? "tablinks active" : "tablinks"} onClick={() => openTab('rebar')}>Design Rebar</button>
+                <div className='saveBtnContainer'>
+                    <button onClick={handleSave} title='Save' className={"saveBtn"} disabled={!isModified}>
+                        <FaSave size={18}></FaSave>
+                    </button>
+                </div>
             </div>
             <form className="bar-form">
                 <div className={`left-form ${activeTab === 'common' ? 'show' : ''}`}>
@@ -401,12 +443,12 @@ const DesignBeamInputForm: FunctionComponent<BeamInputFormProps> = ({ id, beam, 
                         <RebarList barItems={rebarList} expandedColumnIndex={expandedColumnIndex}></RebarList>
                     </div>
                 </div>
-                <div className="form-group">
+                {/*<div className="form-group">
                     <button type="button" onClick={handleSave}>Save</button>
-                </div>
+                                    </div>*/}
             </form>
         </div>
     );
-}
+})
 
 export default DesignBeamInputForm;

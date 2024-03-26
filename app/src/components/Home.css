@@ -83,6 +83,7 @@ nav ul li a {
 main {
     display: flex;
     flex-grow: 1;
+    overflow-y: auto;
     /* Grow to fill remaining space */
 }
 
@@ -90,12 +91,14 @@ main {
 .result-section {
     flex-grow: 1;
     padding: 5px;
+    box-sizing: border-box;
 }
 
 
 .input-section {
     padding: 5px !important;
     transition: width 0.3s ease-in-out;
+    box-sizing: border-box;
     /*background-color: #f0f0f0;*/
 }
 
@@ -172,13 +175,19 @@ main {
 }
 
 .tabcontent {
-    display: none;
-    padding: 20px;
+    display: none !important;
+    /*padding: 20px;*/
+
+    height: 100%;
+    display: flex !important;
+    /* Use flexbox for layout */
+    flex-direction: column;
+    /* Arrange children vertically */
 }
 
 .tabcontent.active {
     display: block;
-    padding: 20px;
+    /*padding: 20px;*/
 }
 
 #subToolList {
@@ -343,6 +352,7 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .dialog {
@@ -396,4 +406,47 @@ footer {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.resultTextCls {
+    height: 50%;
+    /* Set the height of result_text to 70% of the parent height */
+    /*overflow: auto;*/
+    /* Add overflow to allow scrolling if content overflows */
+}
+
+.beamTableCls {
+    width: 100%;
+    height: 50%;
+    /* Set the height of result_text to 70% of the parent height */
+    /* Add overflow to allow scrolling if content overflows */
+
+    /*border: 1px solid rgb(204, 204, 204);*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow */
+    margin-top: 10px;
+}
+
+
+.splitter_result {
+    height: 5px;
+    width: 100%;
+    cursor: row-resize;
+    background-color: #ddd;
+    position: relative;
+}
+
+.tabdesign {
+    display: none;
+    /*padding: 20px;*/
+
+    height: 100%;
+    display: flex !important;
+    /* Use flexbox for layout */
+    flex-direction: column;
+    /* Arrange children vertically */
+}
+
+.tabdesign.active {
+    display: block;
+    /*padding: 20px;*/
 }
