@@ -18,3 +18,11 @@
     transform: translate(-50%, -50%) scale(1.3);
     /* Scale up on hover */
 }
+
+.controlBtnCls {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-left: 15px;
+
+}

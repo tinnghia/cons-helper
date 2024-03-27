@@ -12,11 +12,11 @@ const AXIS_X_COLOR = 'red';
 const AXIS_Y_COLOR = 'green';
 
 const BeamAxis = ({ indexes }) => {
-    const verticalLines = indexes.map((idx, index) => {
+    const verticalLines = indexes ? indexes.map((idx, index) => {
         // Calculate the x-coordinate of the current vertical line
         const x = idx * LENGTH_SCALE + AXIS_MARGIN_LEFT;
         return { x, y: AXIS_MARGIN_TOP };
-    });
+    }) : [];
     const yAxisX1 = 0; //verticalLines[0].x - YAXIS_OVER_LEFT_RIGHT;
     const yAxisX2 = window.innerWidth;//verticalLines[verticalLines.length - 1].x + YAXIS_OVER_LEFT_RIGHT;
 

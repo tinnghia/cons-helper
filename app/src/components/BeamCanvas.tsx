@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import BeamAxis, { AXIS_HEIGHT, AXIS_MARGIN_TOP } from '../beam/BeamAxis';
 import MainBar from '../beam/MainBar';
@@ -55,10 +55,19 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
   }));
 
   const stageRef = useRef<any>();
+  const stageContainerRef = useRef<HTMLDivElement>(null);
+  const [minHeight, setMinHeight] = useState(0);
+
+  useEffect(() => {
+    if (stageContainerRef.current && stageContainerRef.current.parentElement) {
+      const parentHeight = stageContainerRef.current.parentElement.clientHeight - 30;
+      setMinHeight(Math.max(parentHeight, 200)); // Adjust 200 as needed
+    }
+  }, []);
 
   return (
-    <div>
-      <div>
+    <div style={{ height: '100%' }} ref={stageContainerRef}>
+      <div className='controlBtnCls'>
         <button onClick={handleScaleIn} className='zoom' title='Zoom In'>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-zoom-in" viewBox="0 0 16 16">
             <path fillRule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11M13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0" />
@@ -74,7 +83,7 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
           </svg>
         </button>
       </div>
-      <Stage draggable width={window.innerWidth} height={window.innerHeight} scaleX={scale} scaleY={scale}>
+      <Stage draggable height={minHeight} width={window.innerWidth}  scaleX={scale} scaleY={scale} ref={stageRef}>
         {/* Dot Vertical Lines */}
         <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} />
       </Stage>

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { FaSave } from 'react-icons/fa';
 import "./DesignBeamInputForm.css";
 import RebarList from './RebarList';
@@ -294,6 +294,24 @@ const DesignBeamInputForm = forwardRef<any, BeamInputFormProps>(({ id, beam, sho
         handleSave: handleSave,
         checkModified: checkModified
     }));
+
+    const handleKeyPress = (event: any) => {
+        if (event.key === 'Enter') {
+            if (activeTab === 'span')
+                handleAddSpan();
+            else if (activeTab === 'rebar') {
+                handleAddRebar();
+            }
+        }
+    };
+    useEffect(() => {
+        // Add event listener when component mounts
+        document.addEventListener('keydown', handleKeyPress);
+        // Remove event listener when component unmounts
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []);
     return (
         <div className={show ? "bodyCls" : "bodyCls hide"}>
             <div className="tab">

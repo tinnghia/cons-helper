@@ -3,14 +3,15 @@ import { BeamOutputData } from '../models/BeamOutputData';
 import BeamCanvas from './BeamCanvas';
 import "./DesignBeamResultForm.css";
 
-interface ResultFormProps extends BeamOutputData {
+interface ResultFormProps {
+    beam?: BeamOutputData;
     onBack: (event: React.MouseEvent) => void;
 }
 
 const DesignBeamResultForm: React.FC<ResultFormProps> = (outputData) => {
 
     return (
-        <BeamCanvas topBars={outputData.topBars} bottomBars={outputData.bottomBars} indexes={outputData.indexes} ></BeamCanvas>
+        <BeamCanvas topBars={outputData.beam?.topBars} bottomBars={outputData.beam?.bottomBars} indexes={outputData.beam?.indexes} ></BeamCanvas>
     )
 }
 

@@ -20,6 +20,8 @@ export default function Home() {
 
     //CUTTING BAR
     const [outputData, setOutputData] = useState<OutputData>();
+    const [outputSolutions, setOutputSolutions] = useState<any>();
+    const [selectedResultBeam, setSelectedResultBeam] = useState<BeamOutputData>();
     const [outputDesignData, setOutputDesignData] = useState<BeamOutputData>();
     const [isShowCuttingResult, SetIsShowCuttingResult] = useState(false);
     const [isShowDesignResult, SetIsShowDesignResult] = useState(false);
@@ -74,10 +76,8 @@ export default function Home() {
 
     }
 
-    const onHandleDesignResult = (outputData: BeamOutputData) => {
-        setOutputDesignData(outputData);
-        console.log('setOutputDesignData', outputData);
-        setIndexes(outputData?.indexes);
+    const onHandleDesignResult = (outputData: any) => {
+        setOutputSolutions(outputData);
         SetIsShowDesignResult(true);
         setShowLoading(false);
         setActiveTab('result');
@@ -257,6 +257,9 @@ export default function Home() {
             listBeamRef.current.handleRun();
         }
     }
+    const handleSelectBeam = (beam: BeamOutputData) => {
+        setSelectedResultBeam(beam);
+    };
     return (
         <div className="container">
             <header>
@@ -316,7 +319,7 @@ export default function Home() {
                                     {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                                     )}
 
-                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} topBars={outputDesignData?.topBars} bottomBars={outputDesignData?.bottomBars} indexes={outputDesignData?.indexes} />
+                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} beam={selectedResultBeam} />
                                     )}
                                 </div>
                                 {isShowDesignResult &&
@@ -324,7 +327,7 @@ export default function Home() {
                                         <div className="splitter_result" id="splitter" onPointerDown={handleMouseDownSplitResult}>
                                         </div>
                                         <div className="beamTableCls" ref={resultBeamTableRef} style={{ height: inputHeight, padding: inputHeight === '0px' ? '0px' : '10px' }}>
-                                            <BeamTableForm></BeamTableForm>
+                                            <BeamTableForm beamList={outputSolutions.beamList} onSelect={handleSelectBeam}></BeamTableForm>
                                         </div></>)}
                             </div>)}
                         {activeTab === 'history' && (
@@ -343,7 +346,9 @@ export default function Home() {
                             <p style={{ color: '#333', fontSize: '16px', lineHeight: '1.5' }}>
                                 {saveStatus === 'success' ? 'Save Beam successful!' : 'Save failed. Please try again.'}
                             </p>
-                            <button onClick={handleCloseDialog} style={{ marginTop: '20px' }}>Close</button>
+                            <div className="button-container">
+                                <button onClick={handleCloseDialog} style={{ marginTop: '20px' }}>Close</button>
+                            </div>
                         </div>
                     </div>
                 )}
