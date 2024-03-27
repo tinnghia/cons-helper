@@ -140,7 +140,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
                                     ))}
 
                                     {Array.from({ length: maxColumns - (spanBars ? spanBars[index]?.length : 0) }, (_, index) => (
-                                        <td className='columnRemainbar'></td>
+                                        <td key={index} className='columnRemainbar'></td>
                                     ))}
                                     {getRemainBar(index + 1) &&
                                         (<td className='columnRemainbar'>{`L${index + 1}-${getRemainBar(index + 1)?.subIndex} (${getRemainBar(index + 1)?.length})`}</td>)

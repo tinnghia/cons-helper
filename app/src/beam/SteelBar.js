@@ -68,7 +68,8 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
 
       />
       {/* Label */}
-      <Text x={labelX} y={labelY} text={`${label} (${((x2 - x1) / LENGTH_SCALE).toFixed(2)}${unit})`} fontSize={DEFAULT_LABEL_FONT_SIZE} align="center"
+      {/* text={`${label} (${((x2 - x1) / LENGTH_SCALE).toFixed(2)}${unit})`} */}
+      <Text x={labelX} y={labelY} text={`${label}`} fontSize={DEFAULT_LABEL_FONT_SIZE} align="center"
         fill={isMain ? DEFAULT_LABEL_MAIN_COLOR : DEFAULT_LABEL_SECONDARY_COLOR}
         shadowColor={isClicked ? DEFAULT_BLUR_COLOR : isMain ? DEFAULT_BAR_MAIN_COLOR : DEFAULT_BAR_SECONDARY_COLOR}
         shadowBlur={isClicked ? 10 : 0}

@@ -304,16 +304,8 @@ const DesignBeamInputForm = forwardRef<any, BeamInputFormProps>(({ id, beam, sho
             }
         }
     };
-    useEffect(() => {
-        // Add event listener when component mounts
-        document.addEventListener('keydown', handleKeyPress);
-        // Remove event listener when component unmounts
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress);
-        };
-    }, []);
     return (
-        <div className={show ? "bodyCls" : "bodyCls hide"}>
+        <div className={show ? "bodyCls" : "bodyCls hide"} onKeyDown={handleKeyPress}>
             <div className="tab">
                 <button className={activeTab === 'common' ? "tablinks active" : "tablinks"} onClick={() => openTab('common')}>COMMON PROPERTIES</button>
                 <button className={activeTab === 'span' ? "tablinks active" : "tablinks"} onClick={() => openTab('span')}>DESIGN SPAN</button>

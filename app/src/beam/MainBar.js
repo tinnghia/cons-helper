@@ -23,6 +23,7 @@ const MainBar = ({ y, bars, isUp, label }) => {
                 x: ex,
                 y: ey
             },
+            label: `L${bar.refBar.index}_${bar.refBar.subIndex}`,
             beginAnchor: bar.beginAnchor * LENGTH_SCALE,
             endAnchor: bar.endAnchor * LENGTH_SCALE
         };
@@ -31,7 +32,7 @@ const MainBar = ({ y, bars, isUp, label }) => {
 
     return (
         <>
-            {horizontalLines.map(({ begin, end, beginAnchor, endAnchor }, index) => (
+            {horizontalLines.map(({ begin, end, beginAnchor, endAnchor, label }, index) => (
 
                 <React.Fragment key={index}>
                     <>
