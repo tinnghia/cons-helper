@@ -52,7 +52,7 @@ const MainBar = forwardRef<any, MainBarProps>(({ y, bars, isUp, label, onAddBar 
                 <React.Fragment key={index}>
                     <>
                         <SteelBar x1={begin.x} x2={end.x} y={begin.y} label={label} isMain={true}
-                            isAnchorBegin={true} isUp={isUp} anchorSize={0} isAnchorEnd={false} beginAnchor={beginAnchor} endAnchor={endAnchor} />
+                            isAnchorBegin={true} isUp={isUp} anchorSize={0} isAnchorEnd={false} beginAnchor={beginAnchor} endAnchor={endAnchor}></SteelBar>
                     </>
                 </React.Fragment>
             ))}

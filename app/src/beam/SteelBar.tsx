@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Line, Text } from 'react-konva';
 import { LENGTH_SCALE } from './MainBar';
 
@@ -12,19 +12,33 @@ const DEFAULT_BAR_MAIN_COLOR = 'blue';
 const DEFAULT_BAR_SECONDARY_COLOR = 'orange';
 const DEFAULT_BLUR_COLOR = '#69a3bf';
 
-const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, isAnchorEnd, beginAnchor, endAnchor, unit = 'm' }) => {
+interface SteelBarProps {
+  x1: number,
+  x2: number,
+  y: number,
+  label: any,
+  isMain: boolean,
+  isUp: boolean,
+  anchorSize?: number,
+  isAnchorBegin?: boolean,
+  isAnchorEnd?: boolean,
+  beginAnchor: number,
+  endAnchor: number,
+  unit?: string;
+}
+const SteelBar = forwardRef<any, SteelBarProps>(({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, isAnchorEnd, beginAnchor, endAnchor, unit = 'm' }, ref) => {
   const [isClicked, setIsClicked] = useState(false);
 
   // Calculate label position
   const labelX = (x1 + x2) / 2 - 10;
   const labelY = y - DEFAULT_BAR_MAIN_THICKNESS - DEFAULT_SPACE_BETWEEN_LABEL_BAR;
 
-  const handleMouseEnter = (e) => {
+  const handleMouseEnter = (e: any) => {
     setIsClicked(true);
     e.target.getStage().container().style.cursor = 'pointer';
   };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = (e: any) => {
     setIsClicked(false);
     e.target.getStage().container().style.cursor = 'default';
   };
@@ -45,6 +59,16 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
     points.push(x2);
     points.push(isUp ? y + endAnchor : y - endAnchor);
   }
+
+  const focus = () => {
+    setIsClicked(true);
+    setTimeout(() => setIsClicked(false), 3000);
+  };
+
+  useImperativeHandle(ref, () => ({
+    focus: focus
+  }));
+
   return (
     <>
       {/* Line */}
@@ -78,6 +102,6 @@ const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, i
         opacity={isClicked ? 0.5 : 1} />
     </>
   );
-};
+});
 
 export default SteelBar;
