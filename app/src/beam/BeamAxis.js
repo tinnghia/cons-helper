@@ -2,8 +2,8 @@ import React from 'react';
 import { Circle, Line, Text } from 'react-konva';
 import { LENGTH_SCALE } from './MainBar';
 
-export const AXIS_MARGIN_TOP = 50;
-export const AXIS_MARGIN_LEFT = 50;
+export const AXIS_MARGIN_TOP = 5;
+export const AXIS_MARGIN_LEFT = 20;
 const YAXIS_OVER_LEFT_RIGHT = 20;
 export const AXIS_HEIGHT = 120;
 const AXIS_LEGEND_COLOR = 'black';

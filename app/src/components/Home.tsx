@@ -58,6 +58,7 @@ export default function Home() {
     const inputSectionRef = useRef<any>(null);
     const resultSectionRef = useRef<any>(null);
     const resultBeamTableRef = useRef<any>(null);
+    const beamResultFormRef = useRef<any>(null);
     const resultTextRef = useRef<any>(null);
     const resultRef = useRef<any>(null);
 
@@ -260,6 +261,10 @@ export default function Home() {
     const handleSelectBeam = (beam: BeamOutputData) => {
         setSelectedResultBeam(beam);
     };
+
+    const handleClickSpan =(spanIndex:string) =>{
+        beamResultFormRef.current.handleMoveTo(spanIndex);
+    }
     return (
         <div className="container">
             <header>
@@ -319,7 +324,7 @@ export default function Home() {
                                     {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                                     )}
 
-                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} beam={selectedResultBeam} />
+                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} beam={selectedResultBeam} ref={beamResultFormRef}/>
                                     )}
                                 </div>
                                 {isShowDesignResult &&
@@ -327,7 +332,7 @@ export default function Home() {
                                         <div className="splitter_result" id="splitter" onPointerDown={handleMouseDownSplitResult}>
                                         </div>
                                         <div className="beamTableCls" ref={resultBeamTableRef} style={{ height: inputHeight, padding: inputHeight === '0px' ? '0px' : '10px' }}>
-                                            <BeamTableForm beamList={outputSolutions.beamList} onSelect={handleSelectBeam}></BeamTableForm>
+                                            <BeamTableForm beamList={outputSolutions.beamList} onSelect={handleSelectBeam} onClickSpan={handleClickSpan}></BeamTableForm>
                                         </div></>)}
                             </div>)}
                         {activeTab === 'history' && (

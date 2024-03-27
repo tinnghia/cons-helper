@@ -8,10 +8,11 @@ import "./BeamViewerCanvas.css";
 interface DrawingCanvasProps {
   topBars?: any[];
   bottomBars?: any[];
-  indexes?: any[]
+  indexes?: any[],
+  onAddBar?: (lines:any)=>void
 };
 
-const DotVerticalLines: React.FC<DrawingCanvasProps> = ({ topBars, bottomBars, indexes }) => {
+const DotVerticalLines: React.FC<DrawingCanvasProps> = ({ topBars, bottomBars, indexes,onAddBar }) => {
   // Calculate the vertical offset for the second line
   const strokeWidth = 4;
   const offset = strokeWidth + 10;
@@ -21,11 +22,11 @@ const DotVerticalLines: React.FC<DrawingCanvasProps> = ({ topBars, bottomBars, i
     <Layer>
       <BeamAxis indexes={indexes}></BeamAxis>
       {topBars && topBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index + 1}></MainBar>
+        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index + 1} onAddBar={onAddBar}></MainBar>
       ))}
 
       {bottomBars && bottomBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS + AXIS_HEIGHT / 2} isUp={false} bars={bar.bars} label={index + 1}></MainBar>
+        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS + AXIS_HEIGHT / 2} isUp={false} bars={bar.bars} label={index + 1} onAddBar={onAddBar}></MainBar>
       ))}
     </Layer>
   );
@@ -81,6 +82,9 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
     });
     anim.play();
   }
+  const handleAddBar = (lines:any)=>{
+    console.log('handleAddBar', lines)
+  }
 
   useEffect(() => {
     if (stageContainerRef.current && stageContainerRef.current.parentElement) {
@@ -109,7 +113,7 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
       </div>
       <Stage draggable height={minHeight} width={window.innerWidth} scaleX={scale} scaleY={scale} ref={stageRef}>
         {/* Dot Vertical Lines */}
-        <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} />
+        <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} onAddBar={handleAddBar} />
       </Stage>
     </div>
   );

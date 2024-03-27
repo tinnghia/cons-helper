@@ -4,6 +4,7 @@ import "./BeamTableForm.css";
 interface BeamTableFormProps {
     beamList: BeamSolution[];
     onSelect: (beam: BeamOutputData) => void;
+    onClickSpan: (spanId:string) => void;
 }
 
 interface BeamSolution {
@@ -11,7 +12,7 @@ interface BeamSolution {
     outputDataList: BeamOutputData[]
 }
 
-interface SpanBar {
+export interface SpanBar {
     length: number;
     index: number;
     subIndex: number;
@@ -24,7 +25,7 @@ interface BarQueue {
 
 }
 
-const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
+const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect, onClickSpan }) => {
     const [selectedSolutionIndex, setSelectedSolutionIndex] = useState(0);
     const [selectedSolution, setSelectedSolution] = useState<BeamSolution | null>(null);
     const [selectedBarQueue, setSelectedBarQueue] = useState<BarQueue | null>(null);
@@ -76,6 +77,10 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
         return maxLength;
     }
 
+    const handleSpanClick= (label:string)=>{
+        onClickSpan(label);
+    }
+
     useEffect(() => {
         // Fire onSelect with the first beam from selectedSolution?.outputDataList when the component initializes
         if (selectedSolution && selectedSolution.outputDataList.length > 0) {
@@ -122,7 +127,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
                                     BAR
                                 </td>
                                 {Array.from({ length: maxColumns }, (_, index) => (
-                                    <td className='columnSubbar'></td>
+                                    <td className='columnSubbar' key={index}></td>
                                 ))}
                                 <td className='columnRemainbar'>REMAIN</td>
                             </tr>
@@ -134,7 +139,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
                                     </td>
                                     {spanBars && spanBars[index].map((bar, idx) => (
                                         <td key={idx} className='columnSubbar'>
-                                            <a href='#' className='spanIndexValue'> {`L${index + 1}-${bar.subIndex}`}</a>
+                                            <a href='#' className='spanIndexValue' onClick={()=>{handleSpanClick(`L${index + 1}_${bar.subIndex}`)}}> {`L${index + 1}_${bar.subIndex}`}</a>
                                             <span className='spanValue'>({bar.length})</span>
                                         </td>
                                     ))}
@@ -143,7 +148,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect }) => {
                                         <td key={index} className='columnRemainbar'></td>
                                     ))}
                                     {getRemainBar(index + 1) &&
-                                        (<td className='columnRemainbar'>{`L${index + 1}-${getRemainBar(index + 1)?.subIndex} (${getRemainBar(index + 1)?.length})`}</td>)
+                                        (<td className='columnRemainbar'>{`L${index + 1}_${getRemainBar(index + 1)?.subIndex} (${getRemainBar(index + 1)?.length})`}</td>)
                                     }
                                     {!getRemainBar(index + 1) &&
                                         (<td className='columnRemainbar'></td>)

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import BeamAxis, { AXIS_HEIGHT, AXIS_MARGIN_TOP } from '../beam/BeamAxis';
 import MainBar from '../beam/MainBar';
@@ -7,24 +7,41 @@ import "./BeamCanvas.css";
 interface BeamCanvasProps {
   topBars?: any[];
   bottomBars?: any[];
-  indexes?: any[]
+  indexes?: any[],
+  onAddBar: (lines: any) => void
 };
 
-const DotVerticalLines: React.FC<BeamCanvasProps> = ({ topBars, bottomBars, indexes }) => {
+const DotVerticalLines: React.FC<BeamCanvasProps> = ({ topBars, bottomBars, indexes, onAddBar }) => {
   // Calculate the vertical offset for the second line
   const strokeWidth = 4;
   const offset = strokeWidth + 10;
   const y = AXIS_MARGIN_TOP;
   const MARGIN_X_AXIS = 5;
+  const mainBarRefs = useRef<{ [key: string]: React.RefObject<any> }>({});
+
+  useEffect(() => {
+    if (topBars) {
+      topBars.forEach((bar, index) => {
+        mainBarRefs.current[bar.label] = mainBarRefs.current[bar.label] || React.createRef();
+      });
+    }
+
+    if (bottomBars) {
+      bottomBars.forEach((bar, index) => {
+        mainBarRefs.current[bar.label] = mainBarRefs.current[bar.label] || React.createRef();
+      });
+    }
+  }, [topBars, bottomBars]);
+
   return (
     <Layer>
       <BeamAxis indexes={indexes}></BeamAxis>
       {topBars && topBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index + 1}></MainBar>
+        <MainBar key={index} y={y + index * offset} isUp={true} bars={bar.bars} label={index + 1} onAddBar={onAddBar}></MainBar>
       ))}
 
       {bottomBars && bottomBars.map((bar, index) => (
-        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS + AXIS_HEIGHT / 2} isUp={false} bars={bar.bars} label={index + 1}></MainBar>
+        <MainBar key={index} y={y + index * offset + MARGIN_X_AXIS + AXIS_HEIGHT / 2} isUp={false} bars={bar.bars} label={index + 1} onAddBar={onAddBar}></MainBar>
       ))}
     </Layer>
   );
@@ -38,6 +55,7 @@ interface BeamCanvasDefineProps {
 
 const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars, indexes }, ref) => {
   const [scale, setScale] = useState(2);
+  const [lines, setLines] = useState<any[]>([])
   const handleScaleIn = () => {
     setScale(scale * 1.1);
   };
@@ -51,12 +69,47 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
 
   // Forwarding the ref to the component
   useImperativeHandle(ref, () => ({
-    handleZoomTo: handleZoomTo
+    handleZoomTo: handleZoomTo,
+    handleMoveTo: handleMoveTo
   }));
+
+  const handleMoveTo = (spanIndex: string) => {
+    console.log('handleMoveTo', spanIndex);
+    const ls = lines.filter(line => line.label === spanIndex);
+    console.log('ressss', ls)
+
+    const stage = stageRef.current;
+    const stageElement = stageRef.current.container();
+    const stageRect = stageElement.getClientRects()[0];
+
+    console.log('stageRect.height ==', stageRect.height, AXIS_MARGIN_TOP + ls[0].begin.y)
+    if (stageRect.height < AXIS_MARGIN_TOP + ls[0].begin.y) {
+      const delta = AXIS_MARGIN_TOP + ls[0].begin.y - stageRect.height + 5;
+
+      // Get the current position of the Stage
+      const stagePosition = stage.position();
+      console.log('stagePosition1', stagePosition, stageRect, ls)
+
+      // Update the position of the Stage to center the line
+      stage.position({
+        x: stagePosition.x,
+        y: stagePosition.y - delta,
+      });
+
+      // Request a redraw of the Stage
+      stage.batchDraw();
+    }
+
+
+  }
 
   const stageRef = useRef<any>();
   const stageContainerRef = useRef<HTMLDivElement>(null);
   const [minHeight, setMinHeight] = useState(0);
+
+  const handleAddBar = (newLines: []) => {
+    setLines(prevLines => [...prevLines, ...newLines]);
+  }
 
   useEffect(() => {
     if (stageContainerRef.current && stageContainerRef.current.parentElement) {
@@ -83,9 +136,9 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
           </svg>
         </button>
       </div>
-      <Stage draggable height={minHeight} width={window.innerWidth}  scaleX={scale} scaleY={scale} ref={stageRef}>
+      <Stage draggable height={minHeight} width={window.innerWidth} scaleX={scale} scaleY={scale} ref={stageRef}>
         {/* Dot Vertical Lines */}
-        <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} />
+        <DotVerticalLines topBars={topBars} bottomBars={bottomBars} indexes={indexes} onAddBar={handleAddBar} />
       </Stage>
     </div>
   );

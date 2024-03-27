@@ -10,7 +10,7 @@ const DEFAULT_LABEL_MAIN_COLOR = 'blue';
 const DEFAULT_LABEL_SECONDARY_COLOR = 'blue';
 const DEFAULT_BAR_MAIN_COLOR = 'blue';
 const DEFAULT_BAR_SECONDARY_COLOR = 'orange';
-const DEFAULT_BLUR_COLOR = 'grey';
+const DEFAULT_BLUR_COLOR = '#69a3bf';
 
 const SteelBar = ({ x1, x2, y, label, isMain, isUp, anchorSize, isAnchorBegin, isAnchorEnd, beginAnchor, endAnchor, unit = 'm' }) => {
   const [isClicked, setIsClicked] = useState(false);
