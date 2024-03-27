@@ -6,41 +6,36 @@ import com.ndoan.cons.core.dto.SplitMethod;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
 public class SpanBarQueue {
     int currentParentIndex;
-    Map<Integer, SpanBar> usingSpanBars;
-
-    Map<Integer, SpanBar> remainingSpanBars;
+    List<SpanBar> usingSpanBars;
+    List<SpanBar> remainingSpanBars;
 
     public SpanBarQueue() {
         currentParentIndex = 1;
-        usingSpanBars = new HashMap<>();
-        remainingSpanBars = new HashMap<>();
+        usingSpanBars = new ArrayList<>();
+        remainingSpanBars = new ArrayList<>();
     }
 
     public void add(OutputSet outputSet) {
         List<OutputSplit> splits = outputSet.getSplit();
         for (int i = 1; i <= outputSet.getTotal(); i++) {
+            int subIndex = 1;
             for (OutputSplit split : splits) {
-                if(split.getTotal()> 0 ) {
-                    if (usingSpanBars.containsKey(split.getLength())) {
-                        usingSpanBars.get(split.getLength()).addParent(currentParentIndex, split.getTotal());
-                    } else {
-                        usingSpanBars.put(split.getLength(), new SpanBar(currentParentIndex, split.getTotal()));
-                    }
+                for(int k = 0;k<split.getTotal();k++) {
+                    SpanBar spanBar = new SpanBar(split.getLength(), currentParentIndex, subIndex);
+                    usingSpanBars.add(spanBar);
+                    subIndex ++;
                 }
             }
-            if (remainingSpanBars.containsKey(outputSet.getRemain_per_each())) {
-                remainingSpanBars.get(outputSet.getRemain_per_each()).addParent(currentParentIndex, 1);
-            } else {
-                remainingSpanBars.put(outputSet.getRemain_per_each(), new SpanBar(currentParentIndex, 1));
-            }
+            SpanBar spanBar = new SpanBar(outputSet.getRemain_per_each(), currentParentIndex, subIndex);
+            remainingSpanBars.add(spanBar);
             currentParentIndex++;
         }
     }
@@ -51,12 +46,8 @@ public class SpanBarQueue {
         }
     }
 
-    public int  findAndRemove(int expectedLength) {
-
-        if (usingSpanBars.containsKey(expectedLength) && usingSpanBars.get(expectedLength).checkAvailable()) {
-            return  usingSpanBars.get(expectedLength).use();
-        }
-
-        return -1;
+    public Optional<SpanBar>  findAndRemove(int expectedLength) {
+        Optional<SpanBar> bar_ =  usingSpanBars.stream().filter(bar -> bar.length == expectedLength && !bar.used ).findFirst();
+        return bar_;
     }
 }

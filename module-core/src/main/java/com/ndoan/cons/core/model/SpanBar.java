@@ -3,45 +3,27 @@ package com.ndoan.cons.core.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
 @Setter
 public class SpanBar {
-    Map<Integer, Integer> usingBarToTotal; //mapping between bar index and number of sub bars
-    Map<Integer, Integer> usedBarToTotal; //mapping between bar index and number of sub bars
+    int length;
+    int index;
+    int subIndex;
+    boolean used;
 
-    public SpanBar() {
-        usingBarToTotal = new HashMap<>();
-        usedBarToTotal = new HashMap<>();
-    }
-    public SpanBar(int parentIndex, int number) {
-        usingBarToTotal = new HashMap<>();
-        usedBarToTotal = new HashMap<>();
-        addParent(parentIndex, number);
-    }
-    public void addParent(int parentIndex, int number) {
-        usingBarToTotal.put(parentIndex, number);
-        usedBarToTotal.put(parentIndex,0);
+    public SpanBar(int length, int index, int subIndex) {
+        this.length = length;
+        this.index = index;
+        this.subIndex = subIndex;
     }
 
-    public int use() {
-        for(int key : usingBarToTotal.keySet()) {
-            if(usingBarToTotal.get(key) > usedBarToTotal.get(key)) {
-                usedBarToTotal.put(key, usedBarToTotal.get(key) + 1);
-                return key;
-            }
-        }
-        return -1;
+    public void use() {
+        this.used = true;
     }
 
-    public boolean checkAvailable() {
-        for(int key : usingBarToTotal.keySet()) {
-            if(usingBarToTotal.get(key) > usedBarToTotal.get(key)) {
-                return true;
-            }
-        }
-        return false;
+    public SpanBar clone() {
+        SpanBar cloned = new SpanBar(this.length, this.index, this.subIndex);
+        cloned.used = this.used;
+        return cloned;
     }
 }

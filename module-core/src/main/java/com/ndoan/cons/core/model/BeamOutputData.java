@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 public class BeamOutputData {
     int id;
+    String name;
     List<SolutionMainBar> topBars;
     List<SolutionMainBar> bottomBars;
     int[] spans;

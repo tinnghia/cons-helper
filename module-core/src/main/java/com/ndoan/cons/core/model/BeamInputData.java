@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class BeamInputData {
     int id;
+    String name;
     int standardBarLength;
     int mainBarDiameter;
     int rifBarDiameter;

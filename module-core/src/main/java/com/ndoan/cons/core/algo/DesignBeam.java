@@ -10,6 +10,7 @@ import java.util.*;
 
 public class DesignBeam {
 
+
     SafeLapPointFinderImpl safeLapPointFinder;
     RealBarArranger realBarArranger;
 
@@ -28,6 +29,15 @@ public class DesignBeam {
         beamInputProcessor = new BeamInputProcessorImpl();
     }
 
+    public MultiBeamListOutputData designForMulti(BeamInputData[] inputDataList) {
+        MultiBeamListOutputData multiBeamListOutputData = new MultiBeamListOutputData();
+        BeamListOutputData beamList =  design(inputDataList);
+
+        multiBeamListOutputData.setBeamList(new ArrayList<>());
+        multiBeamListOutputData.getBeamList().add(beamList);
+        multiBeamListOutputData.setWorkId(UUID.randomUUID().toString());
+        return multiBeamListOutputData;
+    }
     public BeamListOutputData design(BeamInputData[] inputDataList) {
         BeamOutputData[] outputDataList = new BeamOutputData[inputDataList.length];
 
@@ -48,7 +58,6 @@ public class DesignBeam {
 
         BeamListOutputData beamListOutputData = new BeamListOutputData();
         beamListOutputData.setOutputDataList(Arrays.asList(outputDataList));
-        beamListOutputData.setWorkId(UUID.randomUUID().toString());
         beamListOutputData.setBarQueue(spanBarQueue);
 
         return beamListOutputData;
@@ -63,8 +72,10 @@ public class DesignBeam {
         for (SolutionMainBar bar : bars) {
             for (SolutionSpliceBar spliceBar : bar.getBars()) {
                 int length = spliceBar.getBeginAnchor() + spliceBar.getEndAnchor() + spliceBar.getEndValue() - spliceBar.getBeginValue();
-                int parentIndex = spanBarQueue.findAndRemove(length);
-                spliceBar.setParentIndex(parentIndex);
+                Optional<SpanBar> spanBar = spanBarQueue.findAndRemove(length);
+                if(spanBar.isPresent()) {
+                    spliceBar.setRefBar(spanBar.get());
+                }
 
             }
         }
@@ -125,6 +136,8 @@ public class DesignBeam {
         BeamOutputData outputData = new BeamOutputData();
         inputData = beamInputProcessor.processInput(inputData);
 
+        outputData.setId(inputData.getId());
+        outputData.setName(inputData.getName());
         List<SolutionMainBar> topBars = topMainBarFinder.find(inputData);
         List<SolutionMainBar> bottomBars = bottomMainBarFinder.find(inputData);
 
