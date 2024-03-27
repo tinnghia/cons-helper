@@ -8,7 +8,7 @@ interface BeamCanvasProps {
   topBars?: any[];
   bottomBars?: any[];
   indexes?: any[],
-  onAddBar: (lines: any) => void
+  onAddBar: (lines: any, barRefs: any) => void
 };
 
 const DotVerticalLines: React.FC<BeamCanvasProps> = ({ topBars, bottomBars, indexes, onAddBar }) => {
@@ -56,6 +56,7 @@ interface BeamCanvasDefineProps {
 const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars, indexes }, ref) => {
   const [scale, setScale] = useState(2);
   const [lines, setLines] = useState<any[]>([])
+  const [barRefs, setBarRefs] = useState<any[]>([])
   const handleScaleIn = () => {
     setScale(scale * 1.1);
   };
@@ -75,6 +76,10 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
 
   const handleMoveTo = (spanIndex: string) => {
     console.log('handleMoveTo', spanIndex);
+    const steelRef = findRefById(spanIndex);
+    if (steelRef) {
+      steelRef.current.focus();
+    }
     const ls = lines.filter(line => line.label === spanIndex);
     console.log('ressss', ls)
 
@@ -107,9 +112,24 @@ const BeamCanvas = forwardRef<any, BeamCanvasDefineProps>(({ topBars, bottomBars
   const stageContainerRef = useRef<HTMLDivElement>(null);
   const [minHeight, setMinHeight] = useState(0);
 
-  const handleAddBar = (newLines: []) => {
+  const handleAddBar = (newLines: [], barRefs: any) => {
     setLines(prevLines => [...prevLines, ...newLines]);
+    setBarRefs(prevRefs => [...prevRefs, barRefs]);
   }
+
+
+  const findRefById = (id: string): any => {
+    let ref;
+    barRefs.forEach((barRef, index) => {
+      for (const key in barRef.current) {
+        if (barRef.current.hasOwnProperty(key) && key === id) {
+          ref = barRef.current[key];
+        }
+      }
+    });
+
+    return ref;
+  };
 
   useEffect(() => {
     if (stageContainerRef.current && stageContainerRef.current.parentElement) {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import SteelBar, { DEFAULT_BAR_MAIN_THICKNESS } from './SteelBar';
 import { AXIS_MARGIN_LEFT } from './BeamAxis';
 
@@ -11,11 +11,13 @@ interface MainBarProps {
     bars: any[],
     isUp: boolean,
     label: any,
-    onAddBar?: (lines: any) => void;
+    onAddBar?: (lines: any, barRefs: any) => void;
 }
 const MainBar = forwardRef<any, MainBarProps>(({ y, bars, isUp, label, onAddBar }, ref) => {
     //const _anchorSize = anchorSize ? anchorSize : DEFAULT_ANCHOR_SIZE;
     //const length = bars.length;
+    const steelBarRefs = useRef<{ [key: string]: React.RefObject<any> }>({});
+
     const horizontalLines = bars.map((bar, index) => {
         // Calculate the x-coordinate of the current horizontal lines
         const bx = bar.beginValue * LENGTH_SCALE + AXIS_MARGIN_LEFT;
@@ -38,8 +40,15 @@ const MainBar = forwardRef<any, MainBarProps>(({ y, bars, isUp, label, onAddBar 
     });
 
     useEffect(() => {
+        if (horizontalLines) {
+            horizontalLines.forEach((bar, index) => {
+                steelBarRefs.current[bar.label] = steelBarRefs.current[bar.label] || React.createRef<any>();
+            });
+        }
         if (onAddBar)
-            onAddBar(horizontalLines);
+            onAddBar(horizontalLines, steelBarRefs);
+
+
     }, []);
 
     useImperativeHandle(ref, () => ({
@@ -52,7 +61,7 @@ const MainBar = forwardRef<any, MainBarProps>(({ y, bars, isUp, label, onAddBar 
                 <React.Fragment key={index}>
                     <>
                         <SteelBar x1={begin.x} x2={end.x} y={begin.y} label={label} isMain={true}
-                            isAnchorBegin={true} isUp={isUp} anchorSize={0} isAnchorEnd={false} beginAnchor={beginAnchor} endAnchor={endAnchor}></SteelBar>
+                            isAnchorBegin={true} isUp={isUp} anchorSize={0} isAnchorEnd={false} beginAnchor={beginAnchor} endAnchor={endAnchor} ref={steelBarRefs.current[label]} ></SteelBar>
                     </>
                 </React.Fragment>
             ))}

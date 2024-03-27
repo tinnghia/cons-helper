@@ -62,7 +62,7 @@ const SteelBar = forwardRef<any, SteelBarProps>(({ x1, x2, y, label, isMain, isU
 
   const focus = () => {
     setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 3000);
+    setTimeout(() => setIsClicked(false), 500);
   };
 
   useImperativeHandle(ref, () => ({
