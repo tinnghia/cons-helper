@@ -42,6 +42,7 @@ public class DesignBeam {
         BeamOutputData[] outputDataList = new BeamOutputData[inputDataList.length];
 
         for (int i = 0; i < inputDataList.length; i++) {
+            System.out.println("DESIGN DESIGN " + i);
             outputDataList[i] = designSingle(inputDataList[i]);
         }
 
