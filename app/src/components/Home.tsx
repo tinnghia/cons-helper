@@ -29,7 +29,7 @@ export default function Home() {
     const [isShowLeft, SetIsShowLeft] = useState(true);
     const [treeWidth, setTreeWidth] = useState('10%');
     const [inputWidth, setInputWidth] = useState('40%');
-    const [inputHeight, setInputHeight] = useState('40%');
+    const [inputHeight, setInputHeight] = useState('34%');
     const [resultWidth, setResultWidth] = useState('50%');
     const [splitterCursor, setSplitterCursor] = useState('col-resize');
     const [svgLeftDisplay, setSvgLeftDisplay] = useState('block');

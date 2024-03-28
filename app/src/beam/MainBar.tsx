@@ -33,7 +33,7 @@ const MainBar = forwardRef<any, MainBarProps>(({ y, bars, isUp, label, onAddBar 
                 x: ex,
                 y: ey
             },
-            label: bar.refBar ? `L${bar.refBar.index}_${bar.refBar.subIndex}` : '',
+            label: bar.refBar ? `L${bar.refBar.index}-${bar.refBar.subIndex}` : '',
             beginAnchor: bar.beginAnchor * LENGTH_SCALE,
             endAnchor: bar.endAnchor * LENGTH_SCALE
         };

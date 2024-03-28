@@ -45,15 +45,12 @@
   padding: 64px 32px 0 32px;
 }
 
-table th,
+/*table th,
 table td {
   padding: 8px;
   text-align: left;
 }
 
-table th {
-  background-color: #f2f2f2;
-}
 
 table tr:nth-child(even) {
   background-color: #f9f9f9;
@@ -62,7 +59,7 @@ table tr:nth-child(even) {
 table tr:hover {
   background-color: #f1f1f1;
 }
-
+*/
 .columnSubbar {
   width: 150px;
   color: #fff;
@@ -116,13 +113,13 @@ table tr:hover {
 }
 
 .SubbarRow_beam {
-  background-color: rgb(224 220 220) !important;
+  background-color: rgb(29, 29, 29) !important;
   transition: all 150ms ease-in-out;
   width: 100%;
 }
 
 .SubbarRow_beam:hover {
-  background-color: #739b8d !important;
+  background-color: #676666 !important;
 }
 
 .remain_label {
@@ -139,7 +136,7 @@ table tr:hover {
 
 .spanIndexValue {
   padding-right: 5px;
-  color: rgb(24, 90, 214);
+  color: rgb(210 215 225);
 }
 
 .solutionSpan {
@@ -182,4 +179,12 @@ table tr:hover {
 
 .solutionNav {
   background-color: transparent;
+}
+
+.fixed-row{
+  position: sticky;
+  top: 0;
+  background-color: rgb(29, 29, 29) !important;
+  transition: all 150ms ease-in-out;
+  z-index: 1;
 }
