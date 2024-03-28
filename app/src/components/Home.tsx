@@ -222,6 +222,8 @@ export default function Home() {
 
     const handleBeamSelectedChange = (node: BeamNode | undefined) => {
         setSelectedBeam(node);
+        const newIndexs = node?.beam.spans.map(item => item.length);
+        setIndexes(newIndexs);
         setActiveTab('history');
     }
 
@@ -252,18 +254,33 @@ export default function Home() {
     };
 
     const hanldePrerRun = () => {
-        if (beamInputRef.current.checkModified()) {
+        if (beamInputRef.current && beamInputRef.current.checkModified()) {
             setShowConfirmation(true);
         } else {
             listBeamRef.current.handleRun();
+        }
+    }
+
+    const hanldePreAdd = () => {
+        if (beamInputRef.current && beamInputRef.current.checkModified()) {
+            setShowConfirmation(true);
+        } else {
+            listBeamRef.current.handleAddChild();
         }
     }
     const handleSelectBeam = (beam: BeamOutputData) => {
         setSelectedResultBeam(beam);
     };
 
-    const handleClickSpan =(spanIndex:string) =>{
+    const handleClickSpan = (spanIndex: string) => {
         beamResultFormRef.current.handleMoveTo(spanIndex);
+    }
+
+    const handleCheckConfirmModified = (): boolean => {
+        if (beamInputRef.current && beamInputRef.current.checkModified()) {
+            setShowConfirmation(true);
+        }
+        return true;
     }
     return (
         <div className="container">
@@ -289,7 +306,7 @@ export default function Home() {
             </nav>
             <main>
                 <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft} initBeamData={beamList} onPreRun={hanldePrerRun} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onPreRun={hanldePrerRun} onPreAdd={hanldePreAdd} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
                     {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm ref={beamInputRef} id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}
@@ -324,7 +341,7 @@ export default function Home() {
                                     {isShowCuttingResult && (<CuttingResultForm onBack={handleCuttingBack} methods={outputData?.methods || []} {...outputData} />
                                     )}
 
-                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} beam={selectedResultBeam} ref={beamResultFormRef}/>
+                                    {isShowDesignResult && (<DesignBeamResultForm onBack={handleCuttingBack} beam={selectedResultBeam} ref={beamResultFormRef} />
                                     )}
                                 </div>
                                 {isShowDesignResult &&

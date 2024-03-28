@@ -235,11 +235,11 @@ interface ListBeamProps {
     onSelectedChange: (node: BeamNode | undefined) => void,
     onRun: () => void;
     onPreRun: () => void;
+    onPreAdd: () => void;
     onResult: (resultData: any) => void;
-    onFail: (error: any) => void
-
+    onFail: (error: any) => void;
 }
-const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onPreRun, onResult, onFail }, ref) => {
+const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onPreRun, onResult, onFail, onPreAdd }, ref) => {
     const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
     const treeRef = useRef<any>(null);
 
@@ -283,7 +283,8 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
     }
     useImperativeHandle(ref, () => ({
         handleUpdateBeam: handleUpdateBeam,
-        handleRun: handleRun
+        handleRun: handleRun,
+        handleAddChild: handleAddChild
     }));
 
     const buildPostData = (node: BeamNode) => {
@@ -317,6 +318,9 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         postData['spans'] = lspans;
         postData['rebars'] = newRebars;
         return postData;
+    }
+    const handlePreAddChild = () => {
+        onPreAdd();
     }
     const handleAddChild = () => {
         const newId = beamData.length > 0 ? Math.max(...beamData.map(beam => beam.id)) + 1 : 1;
@@ -388,7 +392,7 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         <div className={show ? "tree-column" : "tree-column hide"}>
             <div className="button-group">
 
-                <button className="add-child-btn" onClick={handleAddChild}>New Beam<FaPlus className="icon" /></button>
+                <button className="add-child-btn" onClick={handlePreAddChild}>New Beam<FaPlus className="icon" /></button>
                 <button className="run-all-btn" onClick={handlePreRun}>Run<FaPlay className="icon" /></button>
             </div>
             <Tree beamData={beamData} ref={treeRef} onLabelChange={handleLabelChange} onSelectedItemChange={onHandleSelectedChange} onDelete={handleDelete} />

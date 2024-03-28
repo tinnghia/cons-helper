@@ -304,6 +304,14 @@ const DesignBeamInputForm = forwardRef<any, BeamInputFormProps>(({ id, beam, sho
             }
         }
     };
+
+    useEffect(() => {
+        // Do something with beam (e.g., render the form based on beam)
+        setSpans(beam ? beam.spans : []);
+        setRebarList(beam ? beam.rebars : []);
+        setTopMainBars(beam ? beam.topMainBars : '');
+        setBottomMainBars(beam ? beam.bottomMainBars : '');
+    }, [beam]);
     return (
         <div className={show ? "bodyCls" : "bodyCls hide"} onKeyDown={handleKeyPress}>
             <div className="tab">
