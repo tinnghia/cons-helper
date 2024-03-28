@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 public class BeamListOutputData {
     private String workId;
+    String unit;
     List<BeamOutputData> outputDataList;
     SpanBarQueue barQueue;
 }

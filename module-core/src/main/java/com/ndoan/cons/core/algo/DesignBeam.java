@@ -59,6 +59,7 @@ public class DesignBeam {
         BeamListOutputData beamListOutputData = new BeamListOutputData();
         beamListOutputData.setOutputDataList(Arrays.asList(outputDataList));
         beamListOutputData.setBarQueue(spanBarQueue);
+        beamListOutputData.setUnit(inputData.getUnit());
 
         return beamListOutputData;
     }
