@@ -381,7 +381,7 @@ export default function Home() {
                                 {saveStatus === 'success' ? 'Success' : 'Error'}
                             </h2>
                             <p style={{ color: '#333', fontSize: '16px', lineHeight: '1.5' }}>
-                                {saveStatus === 'success' ? 'Save Beam successful!' : 'Save failed. Please try again.'}
+                                {saveStatus === 'success' ? 'Save Beam successful' : 'Save failed. Please try again.'}
                             </p>
                             <div className="button-container">
                                 <button onClick={handleCloseDialog} style={{ marginTop: '20px' }}>Close</button>

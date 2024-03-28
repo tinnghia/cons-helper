@@ -15,7 +15,7 @@ interface TreeItemProps {
     item: BeamNode;
     isSelected: boolean;
     onSelect: () => void;
-    onDelete: (beam:BeamNode) => void;
+    onDelete: (beam: BeamNode) => void;
     onLabelChange: (id: number, value: string) => void;
 }
 
@@ -192,13 +192,14 @@ const Tree = forwardRef<any, TreeProps>(({ beamData, onLabelChange, onSelectedIt
 
     // Expose the focusOnNewBeam function via ref
     useImperativeHandle(ref, () => ({
-        focusOnNewBeam
+        focusOnNewBeam,
+        handleSelectItem:handleSelectItem
     }));
 
     const handleLabelChange = (id: number, value: string) => {
         onLabelChange(id, value);
     }
-    const handleDelete = (node:BeamNode) => {
+    const handleDelete = (node: BeamNode) => {
         onDelete(node);
     }
 
@@ -238,7 +239,7 @@ interface ListBeamProps {
     onPreAdd: () => void;
     onResult: (resultData: any) => void;
     onFail: (error: any) => void;
-    onAskDelete: (beam:BeamNode)=>void;
+    onAskDelete: (beam: BeamNode) => void;
 }
 const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDataUpdate, onSelectedChange, onRun, onPreRun, onResult, onFail, onPreAdd, onAskDelete }, ref) => {
     const [beamData, setBeamData] = useState<BeamNode[]>(initBeamData);
@@ -286,7 +287,7 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         handleUpdateBeam: handleUpdateBeam,
         handleRun: handleRun,
         handleAddChild: handleAddChild,
-        handleDelete:handleDelete
+        handleDelete: handleDelete
     }));
 
     const buildPostData = (node: BeamNode) => {
@@ -386,13 +387,18 @@ const ListBeam = forwardRef<any, ListBeamProps>(({ show, initBeamData, onBeamDat
         onSelectedChange(node);
     }
 
-    const handleAskDelete = (node:BeamNode) => {
+    const handleAskDelete = (node: BeamNode) => {
         onAskDelete(node);
     }
 
-    const handleDelete = (node:BeamNode) => {
-        setBeamData(prevBeamData => prevBeamData.filter(item => item.id !== node.id));
-        onSelectedChange(undefined);
+    const handleDelete = (node: BeamNode) => {
+        setBeamData(prevBeamData => {
+            const filteredBeamData = prevBeamData.filter(item => item.id !== node.id);
+            const remainingItem = filteredBeamData.length > 0 ? filteredBeamData[0] : undefined;
+            onSelectedChange(remainingItem);
+            treeRef.current.handleSelectItem(remainingItem);
+            return filteredBeamData;
+        });
     }
     return (
         <div className={show ? "tree-column" : "tree-column hide"}>

@@ -9,10 +9,10 @@ interface DrawingCanvasProps {
   topBars?: any[];
   bottomBars?: any[];
   indexes?: any[],
-  onAddBar?: (lines:any)=>void
+  onAddBar?: (lines: any) => void
 };
 
-const DotVerticalLines: React.FC<DrawingCanvasProps> = ({ topBars, bottomBars, indexes,onAddBar }) => {
+const DotVerticalLines: React.FC<DrawingCanvasProps> = ({ topBars, bottomBars, indexes, onAddBar }) => {
   // Calculate the vertical offset for the second line
   const strokeWidth = 4;
   const offset = strokeWidth + 10;
@@ -82,8 +82,7 @@ const BeamViewerCanvas = forwardRef<any, BeamViewerCanvasProps>(({ topBars, bott
     });
     anim.play();
   }
-  const handleAddBar = (lines:any)=>{
-    console.log('handleAddBar', lines)
+  const handleAddBar = (lines: any) => {
   }
 
   useEffect(() => {
