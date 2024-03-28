@@ -191,7 +191,7 @@ const DesignBeamInputForm = forwardRef<any, BeamInputFormProps>(({ id, beam, sho
         const updatedSpans = [...spans];
         updatedSpans.splice(index, 1);
         setSpans(updatedSpans);
-        onSpanAction(ADD_SPAN_ACTION, index);
+        onSpanAction(REMOVE_SPAN_ACTION, index);
         setIsModified(true);
     };
 

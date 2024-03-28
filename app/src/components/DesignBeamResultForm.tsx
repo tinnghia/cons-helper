@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { BeamOutputData } from '../models/BeamOutputData';
 import BeamCanvas from './BeamCanvas';
 import "./DesignBeamResultForm.css";
@@ -20,6 +20,9 @@ const DesignBeamResultForm = forwardRef<any, ResultFormProps>((outputData, ref) 
             beamCanvasRef.current.handleMoveTo(spanIndex);
         }
     }
+    /*useEffect(() => {
+
+    }, [outputData]);*/
     return (
         <BeamCanvas topBars={outputData.beam?.topBars} bottomBars={outputData.beam?.bottomBars} indexes={outputData.beam?.indexes} ref={beamCanvasRef}></BeamCanvas>
     )

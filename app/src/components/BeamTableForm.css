@@ -118,6 +118,10 @@ table tr:hover {
   width: 100%;
 }
 
+.SubbarRow_beam.selected {
+  background-color: rgb(27, 19, 77) !important;
+}
+
 .SubbarRow_beam:hover {
   background-color: #676666 !important;
 }

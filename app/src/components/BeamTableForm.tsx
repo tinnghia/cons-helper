@@ -9,7 +9,7 @@ interface BeamTableFormProps {
 
 interface BeamSolution {
     barQueue: BarQueue;
-    unit:string;
+    unit: string;
     outputDataList: BeamOutputData[]
 }
 
@@ -56,7 +56,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect, onClickSpan
             setSpanBars(getSpanBars(beamList[0].barQueue));
             setMaxColumns(getNumberColumns(beamList[0].barQueue));
         }
-    }, []);
+    }, [beamList]);
 
     const getSubBars = (barQueue: BarQueue, index: number) => {
         const arr = barQueue ? barQueue.usingSpanBars.filter(bar => bar.index == index).sort((b1, b2) => b1.subIndex - b2.subIndex) : [];
@@ -87,7 +87,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect, onClickSpan
         if (selectedSolution && selectedSolution.outputDataList.length > 0) {
             onSelect(selectedSolution.outputDataList[0]);
         }
-    }, [selectedSolution, onSelect]);
+    }, [selectedSolution]);
     return (
         <>
             <div>
@@ -109,7 +109,7 @@ const BeamTableForm: FC<BeamTableFormProps> = ({ beamList, onSelect, onClickSpan
                     <table className="table1">
                         <tbody>
                             {selectedSolution?.outputDataList.map((beam, index) => (
-                                <tr className='SubbarRow_beam' key={index}>
+                                <tr className={`SubbarRow_beam ${selectedBeamIndex === index ? 'selected' : ''}`} key={index}>
                                     <td className='columnSubbar_beam'>
                                         <a href='#' className='spanIndexValue' onClick={() => handleSelectBeam(index, beam)}>{beam?.name}</a>
                                     </td>
