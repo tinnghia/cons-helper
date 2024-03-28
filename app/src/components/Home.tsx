@@ -72,6 +72,8 @@ export default function Home() {
 
     const beamInputRef = useRef<any>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showConfirmationDelete, setShowConfirmationDelete] = useState(false);
+    const [deleteBeam, setDeleteBeam] = useState<BeamNode | null>(null);
 
     const handleCuttingBack = () => {
 
@@ -86,6 +88,11 @@ export default function Home() {
     const handleBeamError = (error: any) => {
         console.log(error);
         setShowLoading(false);
+    }
+
+    const handleAskDelete = (beam: BeamNode) => {
+        setShowConfirmationDelete(true);
+        setDeleteBeam(beam);
     }
 
     const onHandleCuttingResult = (outputData: OutputData) => {
@@ -253,6 +260,13 @@ export default function Home() {
         }
     };
 
+    const handleConfirmationDelete = (confirmed: boolean) => {
+        setShowConfirmationDelete(false);
+        if (confirmed) {
+            listBeamRef.current.handleDelete(deleteBeam);
+        }
+    };
+
     const hanldePrerRun = () => {
         if (beamInputRef.current && beamInputRef.current.checkModified()) {
             setShowConfirmation(true);
@@ -306,7 +320,8 @@ export default function Home() {
             </nav>
             <main>
                 <div className="left-column" style={{ border: '1px solid #ccc', borderRadius: '5px', width: treeWidth, padding: treeWidth === '0px' ? '0px' : '20px' }}>
-                    <ListBeam show={isShowLeft} initBeamData={beamList} onPreRun={hanldePrerRun} onPreAdd={hanldePreAdd} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun} onResult={onHandleDesignResult} onFail={handleBeamError}></ListBeam>
+                    <ListBeam show={isShowLeft} initBeamData={beamList} onPreRun={hanldePrerRun} onPreAdd={hanldePreAdd} onBeamDataUpdate={handleBeamDataUpdate} onSelectedChange={handleBeamSelectedChange} ref={listBeamRef} onRun={handleRun}
+                        onResult={onHandleDesignResult} onFail={handleBeamError} onAskDelete={handleAskDelete}></ListBeam>
                 </div>
                 <div className="input-section" id="inputSection" ref={inputSectionRef} style={{ width: inputWidth, padding: inputWidth === '0px' ? '0px' : '20px' }}>
                     {selectedBeam && activeTool === 'beam' && <DesignBeamInputForm ref={beamInputRef} id={selectedBeam?.id} beam={selectedBeam?.beam} onResult={onHandleDesignResult} show={isShowLeft} onSpanAction={onSpanAction} onFirstIndexChange={onFirstIndexChange} onLastIndexChange={onLastIndexChange} onSave={handleSaveBeam} />}
@@ -389,6 +404,14 @@ export default function Home() {
                         message="Do you want to save changes?"
                         onConfirm={() => handleConfirmation(true)}
                         onCancel={() => handleConfirmation(false)}
+                    />
+                )}
+
+                {showConfirmationDelete && (
+                    <ConfirmationModal
+                        message={`Do you want to delete ${deleteBeam?.name}?`}
+                        onConfirm={() => handleConfirmationDelete(true)}
+                        onCancel={() => handleConfirmationDelete(false)}
                     />
                 )}
             </main>
